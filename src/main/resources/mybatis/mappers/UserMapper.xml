@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.workus.user.mapper.UserMapper">
+    <select id="getUsersNotMe" resultType="User">
+        select U.USER_NO as no
+            , U.USER_ID as id
+            , U.USER_NAME as name
+            , U.USER_PASSWORD as password
+            , U.USER_EMAIL as email
+            , U.USER_ADDRESS as address
+            , U.USER_BIRTH_DATE as birthday
+            , U.USER_HIRE_DATE as hireDate
+            , U.USER_QUIT_DATE as quitDate
+            , U.USER_LEAVE_DATE as leaveDate
+            , U.USER_STATUS as status
+            , U.USER_PROFILE_SRC as profileSrc
+            , U.USER_PR as pr
+            , U.USER_PHONE as phone
+            , U.USER_UNUSED_ANNUAL_LEAVE as unusedAnnualLeave
+            , P.POSITION_NO as positionNo
+            , P.POSITION_NAME as positionName
+            , D.DEPT_NO as deptNo
+            , D.DEPT_NAME as deptName
+            , R.ROLE_NO as roleNo
+            , R.ROLE_NAME as roleName
+        from
+            WORKUS_USERS U
+            inner join
+            WORKUS_POSITION P
+        on
+            U.POSITION_NO = P.POSITION_NO
+            inner join
+            WORKUS_DEPT D
+            on
+            U.DEPT_NO = D.DEPT_NO
+            inner join
+            WORKUS_ATH_ROLE R
+            on
+            U.ROLE_NO = R.ROLE_NO
+        where U.USER_STATUS != 'Q'
+        and U.USER_NO != #{userNo}
+        order by U.DEPT_NO ASC, U.POSITION_NO ASC
+    </select>
+    <!--    User getUserByUserNo(@Param("userNo") long userNo);-->
+    <select id="getUserByUserNo" resultType="User">
+        select U.USER_NO as no
+            , U.USER_ID as id
+            , U.USER_NAME as name
+            , U.USER_PASSWORD as password
+            , U.USER_EMAIL as email
+            , U.USER_ADDRESS as address
+            , U.USER_BIRTH_DATE as birthday
+            , U.USER_HIRE_DATE as hireDate
+            , U.USER_QUIT_DATE as quitDate
+            , U.USER_LEAVE_DATE as leaveDate
+            , U.USER_STATUS as status
+            , U.USER_PROFILE_SRC as profileSrc
+            , U.USER_PR as pr
+            , U.USER_PHONE as phone
+            , U.USER_UNUSED_ANNUAL_LEAVE as unusedAnnualLeave
+            , P.POSITION_NO as positionNo
+            , P.POSITION_NAME as positionName
+            , D.DEPT_NO as deptNo
+            , D.DEPT_NAME as deptName
+            , R.ROLE_NO as roleNo
+            , R.ROLE_NAME as roleName
+        from
+            WORKUS_USERS U
+            inner join
+            WORKUS_POSITION P
+        on
+            U.POSITION_NO = P.POSITION_NO
+            inner join
+            WORKUS_DEPT D
+            on
+            U.DEPT_NO = D.DEPT_NO
+            inner join
+            WORKUS_ATH_ROLE R
+            on
+            U.ROLE_NO = R.ROLE_NO
+        where
+            U.USER_NO = #{userNo}
+    </select>
+
+    <select id="getUserById" resultType="User">
+        select U.USER_NO as no
+            , U.USER_ID as id
+            , U.USER_NAME as name
+            , U.USER_PASSWORD as password
+            , U.USER_EMAIL as email
+            , U.USER_ADDRESS as address
+            , U.USER_BIRTH_DATE as birthday
+            , U.USER_HIRE_DATE as hireDate
+            , U.USER_QUIT_DATE as quitDate
+            , U.USER_LEAVE_DATE as leaveDate
+            , U.USER_STATUS as status
+            , U.USER_PROFILE_SRC as profileSrc
+            , U.USER_PR as pr
+            , U.USER_PHONE as phone
+            , U.USER_UNUSED_ANNUAL_LEAVE as unusedAnnualLeave
+            , P.POSITION_NO as positionNo
+            , P.POSITION_NAME as positionName
+            , D.DEPT_NO as deptNo
+            , D.DEPT_NAME as deptName
+            , R.ROLE_NO as roleNo
+            , R.ROLE_NAME as roleName
+        from
+            WORKUS_USERS U
+            inner join
+            WORKUS_POSITION P
+        on
+            U.POSITION_NO = P.POSITION_NO
+            inner join
+            WORKUS_DEPT D
+            on
+            U.DEPT_NO = D.DEPT_NO
+            inner join
+            WORKUS_ATH_ROLE R
+            on
+            U.ROLE_NO = R.ROLE_NO
+        where
+            U.USER_ID = #{id}
+    </select>
+
+    <select id="getAllUsersByName" resultType="com.example.workus.user.vo.User">
+        select U.USER_NO as no
+            , U.USER_ID as id
+            , U.USER_NAME as name
+            , U.USER_PASSWORD as password
+            , U.USER_EMAIL as email
+            , U.USER_ADDRESS as address
+            , U.USER_BIRTH_DATE as birthday
+            , U.USER_HIRE_DATE as hireDate
+            , U.USER_QUIT_DATE as quitDate
+            , U.USER_LEAVE_DATE as leaveDate
+            , U.USER_STATUS as status
+            , U.USER_PROFILE_SRC as profileSrc
+            , U.USER_PR as pr
+            , U.USER_PHONE as phone
+            , U.USER_UNUSED_ANNUAL_LEAVE as unusedAnnualLeave
+            , P.POSITION_NO as positionNo
+            , P.POSITION_NAME as positionName
+            , D.DEPT_NO as deptNo
+            , D.DEPT_NAME as deptName
+            , R.ROLE_NO as roleNo
+            , R.ROLE_NAME as roleName
+        from
+            WORKUS_USERS U
+            inner join
+            WORKUS_POSITION P
+        on
+            U.POSITION_NO = P.POSITION_NO
+            inner join
+            WORKUS_DEPT D
+            on
+            U.DEPT_NO = D.DEPT_NO
+            inner join
+            WORKUS_ATH_ROLE R
+            on
+            U.ROLE_NO = R.ROLE_NO
+        where
+            U.USER_NAME like CONCAT('%'
+            , #{name}
+            , '%')
+    </select>
+
+    <update id="updateSignUpUser">
+        UPDATE WORKUS_USERS
+        SET USER_ID       = #{user.id},
+            USER_PASSWORD = #{user.password},
+            USER_PHONE    = #{user.phone},
+            USER_ADDRESS  = #{user.address}
+        WHERE USER_NO = #{user.no}
+    </update>
+
+    <select id="getTotalRows" resultType="int">
+        SELECT COUNT(*)
+        FROM WORKUS_USERS
+        <where>
+            <if test="condition.status != null">
+                USER_STATUS = #{condition.status}
+            </if>
+            <if test="condition.dept != null">
+                 AND DEPT_NO = #{condition.dept}
+            </if>
+            <if test="condition.name != null">
+                AND USER_NAME = #{condition.name}
+            </if>
+        </where>
+    </select>
+
+    <select id="getUsersByCondition" resultType="User">
+        select
+        U.USER_NO as no
+        , U.USER_ID as id
+        , U.USER_NAME as name
+        , U.USER_PASSWORD as password
+        , U.USER_EMAIL as email
+        , U.USER_ADDRESS as address
+        , U.USER_BIRTH_DATE as birthday
+        , U.USER_HIRE_DATE as hireDate
+        , U.USER_QUIT_DATE as quitDate
+        , U.USER_LEAVE_DATE as leaveDate
+        , U.USER_STATUS as status
+        , U.USER_PROFILE_SRC as profileSrc
+        , U.USER_PR as pr
+        , U.USER_PHONE as phone
+        , U.USER_UNUSED_ANNUAL_LEAVE as unusedAnnualLeave
+        , P.POSITION_NO as positionNo
+        , P.POSITION_NAME as positionName
+        , D.DEPT_NO as deptNo
+        , D.DEPT_NAME as deptName
+        , R.ROLE_NO as roleNo
+        , R.ROLE_NAME as roleName
+        from
+        WORKUS_USERS U
+        inner join
+        WORKUS_POSITION P
+        on
+        U.POSITION_NO = P.POSITION_NO
+        inner join
+        WORKUS_DEPT D
+        on
+        U.DEPT_NO = D.DEPT_NO
+        inner join
+        WORKUS_ATH_ROLE R
+        on
+        U.ROLE_NO = R.ROLE_NO
+        <where>
+            <if test="condition.status != null">
+                U.USER_STATUS = #{condition.status}
+            </if>
+            <if test="condition.dept != null">
+                AND U.DEPT_NO = #{condition.dept}
+            </if>
+            <if test="condition.name != null">
+                AND U.USER_NAME = #{condition.name}
+            </if>
+        </where>
+        ORDER BY U.USER_NO
+        LIMIT #{condition.begin}, 10
+    </select>
+
+    <select id="getAllDepts" resultType="DeptDto">
+        select DEPT_NO   as deptNo
+             , DEPT_NAME as deptName
+        from WORKUS_DEPT
+    </select>
+
+    <select id="getDeptByUserNo" resultType="DeptDto">
+        SELECT DEPT_NO   as deptNo
+             , DEPT_NAME as deptName
+        FROM WORKUS_DEPT
+        WHERE DEPT_NO = (SELECT DEPT_NO
+                         FROM WORKUS_USERS
+                         WHERE USER_NO = #{userNo});
+    </select>
+
+    <update id="updateMyUser">
+        UPDATE WORKUS_USERS
+        SET USER_PR          = #{user.pr},
+            USER_ADDRESS     = #{user.address},
+            USER_PROFILE_SRC = #{user.profileSrc}
+        WHERE USER_NO = #{user.no}
+    </update>
+
+    <update id="updateMyPassword">
+        UPDATE WORKUS_USERS
+        SET USER_PASSWORD = #{user.password}
+        WHERE USER_NO = #{user.no}
+    </update>
+
+    <update id="updateMyPhone">
+        UPDATE WORKUS_USERS
+        SET USER_PHONE = #{user.phone}
+        WHERE USER_NO = #{user.no}
+    </update>
+
+    <select id="getUserRoleNo" resultType="int">
+        SELECT ROLE_NO
+        FROM WORKUS_USERS
+        WHERE USER_NO = #{userNo}
+    </select>
+
+    <select id="getLeaderByDeptNo" resultType="User">
+        SELECT U.USER_NO as no
+             , U.USER_NAME as name
+             , U.ROLE_NO   as roleNo
+        FROM WORKUS_USERS U
+            JOIN WORKUS_DEPT D
+        ON D.LEADER_NO = U.USER_NO
+        WHERE D.DEPT_NO = #{deptNo}
+    </select>
+
+    <select id="getAnnualLeaveByPositionNo" resultType="double">
+        SELECT ANNUAL_LEAVE_COUNT
+        FROM WORKUS_POSITION
+        WHERE POSITION_NO = #{positionNo}
+    </select>
+
+    <select id="getNextUserNoSequence" resultType="long">
+        SELECT MAX(USER_NO) + 1
+        FROM WORKUS_USERS
+    </select>
+
+    <insert id="insertNewEmployee">
+        INSERT INTO WORKUS_USERS
+        (
+            USER_PROFILE_SRC,
+            USER_NO,
+            USER_NAME,
+            USER_BIRTH_DATE,
+            USER_HIRE_DATE,
+            DEPT_NO,
+            POSITION_NO,
+            USER_UNUSED_ANNUAL_LEAVE,
+            ROLE_NO
+         )
+        VALUES
+        (
+            #{user.profileSrc},
+            #{user.no},
+            #{user.name},
+            #{user.birthday},
+            #{user.hireDate},
+            #{user.deptNo},
+            #{user.positionNo},
+            #{user.unusedAnnualLeave},
+            #{user.roleNo}
+        )
+    </insert>
+    <select id="getUsersByRoleNos" resultType="User">
+        SELECT U.USER_NO as no
+            , U.USER_ID as id
+            , U.USER_NAME as name
+            , U.USER_PASSWORD as password
+            , U.USER_EMAIL as email
+            , P.POSITION_NO as positionNo
+            , P.POSITION_NAME as positionName
+            , D.DEPT_NO as deptNo
+            , D.DEPT_NAME as deptName
+            , R.ROLE_NO as roleNo
+            , R.ROLE_NAME as roleName
+        FROM WORKUS_USERS U
+        INNER JOIN WORKUS_POSITION P ON U.POSITION_NO = P.POSITION_NO
+        INNER JOIN WORKUS_DEPT D ON U.DEPT_NO = D.DEPT_NO
+        INNER JOIN WORKUS_ATH_ROLE R ON U.ROLE_NO = R.ROLE_NO
+        WHERE R.ROLE_NO IN
+        <foreach item="roleNo" collection="roleNos" open="(" separator="," close=")">
+        #{roleNo}
+        </foreach>
+    </select>
+</mapper>

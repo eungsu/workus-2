@@ -1,0 +1,284 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #f9f9f9; /* 배경색 변경 */
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 680px;
+    width: 90%;
+    margin: 120px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: white; /* 배경색 추가 */
+}
+
+h1 {
+    color: #e91e63;
+    font-size: 48px;
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+form {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.input__block {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.input__block input,
+.input__block textarea {
+    width: calc(100% - 130px);
+    height: 50px;
+    border-radius: 8px;
+    border: 1px solid #ddd; /* 테두리 추가 */
+    background: #f8f8f8;
+    padding-left: 15px;
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+}
+
+.input__block textarea {
+    height: 100px;
+    padding-top: 10px;
+    resize: none;
+}
+
+.input__block button {
+    width: 120px;
+    height: 50px;
+    margin-left: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #0033fe;
+    color: white;
+}
+
+.filter-select {
+    border-radius: 15px; /* 모서리 둥글게 */
+    background-color: #d9d9d9; /* 배경 색상 */
+    height: 36px; /* 높이 설정 */
+    padding: 0 10px; /* 패딩 설정 */
+    font: 600 15px Montserrat, sans-serif; /* 글씨 크기 */
+    border: none; /* 기본 테두리 제거 */
+    margin-left : 0px;
+}
+
+.input__block label {
+    width: 70px; /* 라벨의 고정 너비 설정 */
+    margin-right: 15px; /* 라벨과 입력 박스 사이의 간격 */
+    text-align: right; /* 라벨 텍스트를 오른쪽 정렬 */
+}
+
+.input__block input,
+.input__block textarea {
+    height: 50px;
+    width: 250px;
+    border-radius: 8px;
+    border: 1px solid #ddd; /* 테두리 추가 */
+    background: #f8f8f8;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+}
+
+.signup__btn {
+    margin-top: 20px;
+    background: #e91e63;
+    color: white;
+    width: 350px;
+    height: 50px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 15px 30px rgba(233, 30, 99, 0.36);
+    transition: .2s linear;
+}
+
+.signup__btn:hover {
+    box-shadow: 0 0 0 rgba(233, 30, 99, 0);
+}
+
+.separator {
+    display: block;
+    margin: 30px auto;
+    text-align: center;
+    color: rgba(15, 19, 42, 0.4);
+    font-size: 13px;
+}
+
+.separator::before,
+.separator::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    background: rgba(15, 19, 42, 0.2);
+    height: 1px;
+    width: 45%;
+}
+
+.separator::before {
+    left: 0;
+}
+
+.separator::after {
+    right: 0;
+}
+
+.file-input {
+    display: none;
+}
+
+/* 파일 선택 텍스트 숨기기 */
+input[type="file"]::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.lnb {
+    position: fixed; /* 고정 위치 */
+}
+
+main {
+    margin-left: 300px;
+    flex: 1; /* 나머지 공간 차지 */
+    padding: 20px; /* 여백 추가 */
+    box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+}
+
+.content {
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+    width: 100%; /* 콘텐츠가 가득 차도록 설정 */
+    margin: 0; /* 기본 마진 제거 */
+    padding: 0; /* 기본 패딩 제거 */
+}
+
+.verticalLayoutFixedSection {
+    display: flex; /* 수평 정렬 */
+}
+
+/* 버튼의 너비를 100%로 설정 */
+.lnb .btn {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    position: relative;  /* 구분선 위치를 버튼 아래에 정확히 놓기 위해 */
+}
+
+/* 기본 메뉴 항목 스타일 */
+.lnb-menu label {
+    display: block;
+    cursor: pointer;
+    padding: 5px 0;
+    position: relative;
+}
+
+/* 클릭된 메뉴 항목에 밑줄 추가 */
+.lnb-menu label a {
+    position: relative;
+    padding: 5px 0;
+    text-decoration: none;
+    color: inherit; /* 기본 색상 유지 */
+}
+
+.lnb-menu label a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #e91e63;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+/* 호버 시 밑줄 확장 */
+.lnb-menu label a:hover:after {
+    width: 100%;
+}
+
+/* 선택된 항목에 밑줄 유지 */
+.lnb-menu label.selected a:after {
+    width: 100%;
+    opacity: 1;
+}
+
+/* 체크박스 숨기기 */
+.lnb-menu input[type="checkbox"] {
+    display: none; /* 체크박스 숨기기 */
+}
+
+/* 체크박스 선택된 상태에서 밑줄 */
+.lnb-menu input[type="checkbox"]:checked + a:after {
+    width: 100%;
+    opacity: 1;
+}
+
+/* 리스트 제목 스타일 */
+.listTitle {
+    position: relative;
+    padding-bottom: 5px; /* 밑줄과 텍스트 간격 조절 */
+    cursor: pointer;
+}
+
+.listTitle:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #e91e63;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+/* 메인 컨텐츠에 대한 부가 설명 스타일 */
+.description {
+    padding-top: 5px;
+    color: #5b90f0;
+    font-size: 15px;
+}
+
+label {
+    margin-right: 20px;
+}
+
+.date-picker {
+    position: relative;
+}
+
+.calendar-icon {
+    position: absolute;
+    right: 10px; /* 아이콘 위치 조정 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px; /* 아이콘 크기 조정 */
+    height: 20px; /* 아이콘 크기 조정 */
+}
+
+input[type="date"] {
+    padding-right: 30px; /* 아이콘과의 간격 조정 */
+}

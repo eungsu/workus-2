@@ -1,0 +1,528 @@
+@charset "UTF-8";
+
+.lnb li a {
+    position: relative;
+    z-index: 1;
+    padding: 4px 2px;
+}
+
+.lnb li a:after {
+    content: "";
+    left: 0;
+    bottom: 3px;
+    width: 0;
+    height: 9px;
+    z-index: -1;
+    background-color: #e91e63;
+    position: absolute;
+    display: inline-block;
+    transition: all 0.3s ease;
+    opacity: 0.1;
+}
+
+.lnb li a:hover:after {
+    width: 100%;
+}
+
+.lnb li.on a:after {
+    opacity: 0.3;
+    width: 100%;
+}
+
+/* 내 근태 현황 */
+.applyItem {
+    display: flex;
+}
+
+.btn.applyBtn, .btn.applyWaitBtn {
+    text-align: left;
+    font-size: 17px;
+    width: 18rem;
+    padding: 1.1rem 1.2rem;
+    display: inline-block;
+}
+
+.btn.applyBtn {
+    transition: all 0.25s ease;
+}
+
+.btn.applyBtn i, .btn.applyWaitBtn i {
+    position: relative;
+    right: 0;
+    transition: right 0.3s ease-in-out;
+}
+
+.btn.applyBtn:hover, .btn.applyWaitBtn:hover {
+    background-color: #2c3e50;
+    color: #fff;
+    border: 1px solid #2c3e50;
+}
+
+.btn.applyBtn:hover .holiday > span, .btn.applyWaitBtn:hover span {
+    color: #fff;
+}
+
+.btn.applyBtn:hover i, .btn.applyWaitBtn:hover i {
+    right: -5px;
+}
+
+.applyItem .applyBtn .holiday {
+    margin-left: 10px;
+    color: #666e77;
+}
+
+.applyWaitBtn .flex.count {
+    color: #666e77;
+}
+
+.applyItem .applyBtn .usable, .applyWaitBtn .data {
+    color: #000;
+    font-weight: 700;
+}
+
+.applyWaitBtn {
+    margin-left: 2rem;
+    width: 20rem;
+    font-size: 16px;
+}
+
+.applyWaitBtn span.count {
+    align-items: flex-end;
+    display: inline-flex;
+    margin-left: 10px;
+}
+
+#fullCalendarInAtd table th {
+    font-size: 16px;
+    font-weight: normal;
+    min-height: 40px;
+    background: #f1f1f1;
+    border: none;
+    border-right: 1px solid #ddd;
+}
+
+#fullCalendarInAtd .fc-col-header-cell-cushion {
+    padding: 7px 4px;
+}
+
+#fullCalendarInAtd .fc-toolbar-title {
+    font-size: 20px;
+}
+
+.fc-col-header-cell-cushion, .fc-daygrid-day-number {
+    text-decoration: none;
+}
+
+/* week/weekend 구별 */
+.fc-scrollgrid-sync-inner > .fc-col-header-cell-cushion,
+.fc-day-mon .fc-daygrid-day-number,
+.fc-day-tue .fc-daygrid-day-number,
+.fc-day-wed .fc-daygrid-day-number,
+.fc-day-thu .fc-daygrid-day-number,
+.fc-day-fri .fc-daygrid-day-number {
+    color: black;
+}
+
+.fc-day-sun .fc-col-header-cell-cushion,
+.fc-day-sun a, .fc-day-sun a:hover {
+    color: rgba(55, 49, 186, 0.8);
+}
+
+.fc-day-sat .fc-col-header-cell-cushion,
+.fc-day-sat a, .fc-day-sat a:hover {
+    color: rgba(55, 49, 186, 0.8);
+}
+
+/* modal */
+dialog {
+    border: none;
+    box-shadow: 1px 2px 5px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    width: 70rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    z-index: 10;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.2);
+    /* backdrop의 필터 속성은 filter가 아닌 backdrop-filter를 사용해야한다. */
+    backdrop-filter: blur(0px);
+}
+
+dialog .modalHeader {
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
+}
+
+dialog .close {
+    border: none;
+    font-size: 20px;
+    background: transparent;
+}
+
+dialog form {
+    height: auto;
+}
+
+dialog .modalBody {
+    padding: 12px;
+    font-size: 16px;
+}
+
+dialog .modalBody .reqFormSec {
+    margin-bottom: 20px;
+}
+
+dialog .modalBody.sec2 {
+    display: flex;
+    height: 370px;
+}
+
+dialog .modalBody.sec2 > div {
+    width: 50%;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+/*dialog .modalBody.sec2 .modalRight {display:none;}*/
+dialog .modalBody.sec2 .modalRight {
+    border-left: 1px solid #ddd;
+}
+
+.reqFormTit {
+    color: #333;
+    font-size: 16px;
+    width: 100%;
+    padding-left: 8px;
+}
+
+.reqFormTit:before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background-color: #0f132a;
+    position: relative;
+    left: -6px;
+    top: -4px;
+}
+
+.description {
+    color: #666;
+    font-size: 14px;
+}
+
+.dayCheck {
+    border-radius: 13px;
+    background-color: #737373;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+    color: #fff;
+    padding: 5px 11px;
+}
+
+.dayTotal {
+    min-width: 10px;
+    display: inline-block;
+}
+
+dialog .modalFooter {
+    border-top: 1px solid #ddd;
+    padding: 12px;
+}
+
+dialog .modalFooter button:not(:last-child) {
+    margin-right: 10px;
+}
+
+textarea {
+    width: 100%;
+    border: 1px solid #9f9f9f;
+    border-radius: 3px;
+    appearance: none;
+    padding: 5px;
+    min-height: 80px;
+    background: transparent;
+}
+
+.annualLeaveOnly, .partOpt {
+    display: inline-block;
+    height: 24px;
+}
+
+.annualLeaveOnly label, .partOpt label {
+    display: inline-flex;
+}
+
+.partOpt {
+    padding-left: 15px;
+    margin-left: 5px;
+    border-left: 1px solid #ddd;
+}
+
+.modalRight .listSec {
+    width: 50%;
+    font-size: 14px;
+}
+
+.modalRight > .d-flex {
+    height: calc(100% - 40px);
+}
+
+.atdList {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 100%;
+    width: 95%;
+    overflow-y: auto;
+}
+
+.atdList li {
+    line-height: 1.9;
+}
+
+.checkedList {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between
+}
+
+.checkedList > div {
+    height: 48%;
+}
+
+.btnW {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 10%;
+    margin-right: 8px;
+}
+
+.btnW button {
+    border: none;
+    background: transparent;
+    margin: 3px 0;
+}
+
+div.atdList {
+    padding: 0;
+}
+
+div.atdList > ul {
+    padding: 10px;
+}
+
+.sTit {
+    border-radius: 3px 3px 0 0;
+    background-color: #0f132a;
+    color: #fff;
+    font-size: 14px;
+    padding: 5px 8px;
+}
+
+.gray {
+    color: #7c7c7c;
+}
+
+#apvListW .input-group {
+    width: auto;
+    justify-content: flex-end;
+    margin-left: 15px;
+    align-items: center;
+}
+
+#apvListW .input-group .simpleText {
+    margin: 0 10px;
+}
+
+#apvListW .input-group input[type="text"], #apvListW .input-group input[type="date"] {
+    border-radius: 0.375rem;
+}
+
+#apvListW .input-group input[type="text"]#searchText {
+    border-radius: 0.375rem 0 0 0.375rem
+}
+
+.smallText {
+    font-size: 14px;
+    color: #a9a9a9;
+    display: inline-block;
+    padding-bottom: 8px;
+}
+
+#collapseExample {
+    display: none;
+}
+
+#collapseExample .card.card-body {
+    margin: 0px 25px 17px;
+    box-shadow: 0px 0px 9px 1px rgba(0, 0, 0, 0.2);
+    background-color: #1f1f1f;
+    color: #fff;
+}
+
+/* 내역(my) */
+.noData {
+    text-align: center;
+    height: calc(100vh - 220px);
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    align-items: center;
+    justify-content: center;
+}
+
+.noDataImg {
+    opacity: 0.5;
+    filter: grayscale(80%);
+    width: 5%;
+    margin: 50px 0 20px;
+}
+
+.noDataText {
+    font-size: 16px;
+}
+
+table tr th {
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.buttonW button {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 5px 15px;
+    border: 2px solid #e91e63;
+    color: #e91e63;
+    font-size: 16px;
+    transition: all 0.2s ease-in;
+    font-weight: bold;
+}
+
+.buttonW button:hover {
+    border: 2px solid #1f1f1f;
+    color: #fff;
+    background-color: #1f1f1f;
+}
+
+.tableW table {
+    text-align: center;
+    font-size: 15px;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.form-switch {
+    font-size: 17px;
+}
+
+.page-item.active .page-link {
+    background-color: #1f1f1f;
+    color: #fff;
+    border: 1px solid #1f1f1f;
+}
+
+table .badge {
+    font-weight: normal;
+    font-size: 15px;
+}
+
+table label {
+    vertical-align: text-top;
+}
+
+.fc-h-event {
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+.fc-h-event .fc-event-main {
+    color: #1f1f1f;
+    /*position: relative;*/
+    padding-left: 19px;
+    font-size: 14px;
+}
+
+.fc-h-event .fc-event-main:before {
+    content: "";
+    width: 8px;
+    display: block;
+    height: 8px;
+    border-radius: 50px;
+    background-color: #e91e63;
+    left: 7px;
+    top: 50%;
+    position: absolute;
+    transform: translateY(-50%);
+}
+
+.wholeDay:hover, .notWholeDay:hover {
+    background-color: #fff;
+}
+
+.fc-h-event.notWholeDay .fc-event-main:before {
+    background-color: #fff;
+    border: 1px solid #e91e63;
+}
+
+.notWholeDay .fc-event-title {
+    position: relative;
+}
+
+.notWholeDay::before {
+    content: attr(data-time);
+    position: absolute;
+    left: 30%;
+    top: 53%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: none;
+}
+
+.notWholeDay:hover::before {
+    display: block;
+}
+
+.official-holiday {
+    background: #2c3e50;
+}
+
+.official-holiday.fc-h-event .fc-event-main {
+    color: #fff;
+}
+
+.official-holiday:hover {
+    background-color: #0f132a;
+}
+
+.official-holiday .fc-event-main:before {
+    display: none;
+}
+
+.official-holiday:hover::before {
+    display: none;
+}
+
+.fc-theme-standard .fc-popover {
+    width: 14.66%;
+}
+
+.fc .fc-daygrid-day-frame {
+    min-height: 180px;
+}
+
+.fc-scroller {
+    overflow: hidden !important;
+}
+
+.fc-col-header, .fc-scrollgrid-sync-table, .fc-daygrid-body.fc-daygrid-body-unbalanced {
+    width: 100% !important;
+}

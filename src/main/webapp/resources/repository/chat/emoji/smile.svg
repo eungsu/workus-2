@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- 얼굴 -->
+  <circle cx="100" cy="100" r="80" fill="#FFE5B4" />
+  
+  <!-- 왼쪽 눈 -->
+  <circle cx="70" cy="85" r="10" fill="#000">
+    <animate
+      attributeName="ry"
+      values="10;2;10"
+      dur="3s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  
+  <!-- 오른쪽 눈 -->
+  <circle cx="130" cy="85" r="10" fill="#000">
+    <animate
+      attributeName="ry"
+      values="10;2;10"
+      dur="3s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  
+  <!-- 입 -->
+  <path d="M 60,110 Q 100,150 140,110" 
+        fill="none" 
+        stroke="#000" 
+        stroke-width="5">
+    <animate
+      attributeName="d"
+      values="M 60,110 Q 100,110 140,110;M 60,110 Q 100,150 140,110;M 60,110 Q 100,110 140,110"
+      dur="3s"
+      repeatCount="indefinite"
+    />
+  </path>
+  
+  <!-- 볼 빨개짐 효과 -->
+  <circle cx="60" cy="110" r="15" fill="#FFB6C1" opacity="0">
+    <animate
+      attributeName="opacity"
+      values="0;0.5;0"
+      dur="3s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  
+  <circle cx="140" cy="110" r="15" fill="#FFB6C1" opacity="0">
+    <animate
+      attributeName="opacity"
+      values="0;0.5;0"
+      dur="3s"
+      repeatCount="indefinite"
+    />
+  </circle>
+</svg>

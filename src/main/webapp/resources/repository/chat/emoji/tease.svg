@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- 노란색 원형 얼굴 -->
+  <circle cx="50" cy="50" r="45" fill="#FFD93D"/>
+  
+  <!-- 왼쪽 눈 (윙크) -->
+  <g>
+    <line x1="25" y1="40" x2="35" y2="40" stroke="#000" stroke-width="3" stroke-linecap="round">
+      <animate
+        attributeName="y1"
+        values="40;45;40"
+        dur="1s"
+        repeatCount="indefinite"/>
+      <animate
+        attributeName="y2"
+        values="40;45;40"
+        dur="1s"
+        repeatCount="indefinite"/>
+    </line>
+  </g>
+  
+  <!-- 오른쪽 눈 -->
+  <circle cx="65" cy="40" r="5" fill="#000"/>
+  
+  <!-- 코 -->
+  <circle cx="50" cy="50" r="5" fill="#FF9B19"/>
+  
+  <!-- 입과 혀 -->
+  <path d="M35 65 C 42 65, 58 65, 65 65" stroke="#000" stroke-width="2" fill="none"/>
+  <!-- 혀 -->
+  <g transform="translate(50, 65)">
+    <path d="M-8 0 
+             C -8 0, -5 2, 0 2 
+             C 5 2, 8 0, 8 0
+             C 8 3, 4 12, 0 15
+             C -4 12, -8 3, -8 0 Z" 
+          fill="#FF6B6B">
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        values="-5 0 0; 5 0 0; -5 0 0"
+        dur="0.5s"
+        repeatCount="indefinite"
+        additive="sum"/>
+    </path>
+  </g>
+  
+  <!-- 볼 터치 -->
+  <circle cx="75" cy="55" r="8" fill="#FF9B19" opacity="0.5">
+    <animate
+      attributeName="opacity"
+      values="0.5;0.8;0.5"
+      dur="1s"
+      repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- 효과 별 -->
+  <g>
+    <path d="M80 25 L85 25 L82.5 20 Z" fill="#FFD93D">
+      <animate
+        attributeName="opacity"
+        values="0;1;0"
+        dur="0.5s"
+        repeatCount="indefinite"/>
+    </path>
+    <path d="M85 35 L90 35 L87.5 30 Z" fill="#FFD93D">
+      <animate
+        attributeName="opacity"
+        values="0;1;0"
+        dur="0.5s"
+        begin="0.25s"
+        repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- 장난스러운 눈썹 -->
+  <path d="M20 30 Q30 25 40 30" stroke="#000" stroke-width="2" fill="none">
+    <animate
+      attributeName="d"
+      values="M20 30 Q30 25 40 30;M20 28 Q30 23 40 28;M20 30 Q30 25 40 30"
+      dur="1s"
+      repeatCount="indefinite"/>
+  </path>
+  <path d="M60 30 Q70 25 80 30" stroke="#000" stroke-width="2" fill="none"/>
+</svg>

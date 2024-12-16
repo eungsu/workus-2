@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.workus.approval.mapper.ApprovalMapper">
+    <select id="getAllCategories" resultType="apvCategory">
+        SELECT APV_CATEGORY_NO as no
+            , APV_CATEGORY_NAME as name
+        FROM WORKUS_APPROVAL_CATEGORY
+    </select>
+    <insert id="insertApprovalFormBase">
+        <selectKey keyProperty="apvForm.no" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO WORKUS_APPROVAL
+        ( APV_TEXT
+        , APV_TO_DATE
+        , APV_TITLE
+        , APV_CATEGORY_NO
+        , USER_NO
+        , APV_REASON)
+        VALUES ( #{apvForm.commonText}
+                , #{apvForm.toDate}
+                , #{apvForm.title}
+                , #{apvForm.categoryNo}
+                , #{apvForm.userNo}
+                , #{apvForm.reason})
+    </insert>
+    <insert id="insertApprovalFormOption">
+        INSERT INTO WORKUS_APPROVAL_TEXT_AREA
+        ( APV_TEXT_NAME
+        , APV_TEXT_VALUE
+        , APV_NO)
+        VALUES ( #{termName}
+               , #{termValue}
+               , #{apvNo})
+    </insert>
+    <sql id="apvListCommonSelect">
+        SELECT a.apv_no            as apv_no
+             , a.apv_created_date  as apv_created_date
+             , a.apv_title         as apv_title
+             , a.apv_category_no   as apv_category_no
+             , c.apv_category_name as apv_category_name
+             , a.user_no           as user_no
+             , a.apv_status        as apv_status
+             , a.apv_approver_no   as apvUserNo
+        FROM WORKUS_APPROVAL a
+        JOIN WORKUS_APPROVAL_CATEGORY c ON c.APV_CATEGORY_NO = a.APV_CATEGORY_NO
+    </sql>
+    <resultMap type="apvListViewDto" id="apvListResultMap">
+        <id property="no" column="apv_no"/>
+        <result property="createdDate" column="apv_created_date"/>
+        <result property="title" column="apv_title"/>
+        <result property="categoryNo" column="apv_category_no"/>
+        <result property="categoryName" column="apv_category_name"/>
+        <result property="reqUserNo" column="user_no"/>
+        <result property="status" column="apv_status"/>
+        <result property="apvUserNo" column="apv_approver_no"/>
+    </resultMap>
+    <select id="getReqList" resultMap="apvListResultMap">
+        <include refid="apvListCommonSelect"/>
+        WHERE a.USER_NO = #{userNo}
+    </select>
+    <select id="getWaitList" resultMap="apvListResultMap">
+       <include refid="apvListCommonSelect"/>
+        WHERE a.APV_STATUS = 'pending'
+    </select>
+    <select id="getEndList" resultMap="apvListResultMap">
+       <include refid="apvListCommonSelect"/>
+        WHERE a.APV_STATUS = 'completed'
+    </select>
+    <select id="getDenyList" resultMap="apvListResultMap">
+       <include refid="apvListCommonSelect"/>
+        WHERE a.APV_STATUS = 'rejected'
+    </select>
+    <select id="getRefListByLeaderNo" resultMap="apvListResultMap">
+       <include refid="apvListCommonSelect"/>
+        WHERE a.user_no IN (SELECT U.USER_NO
+                            FROM WORKUS_USERS U
+                            JOIN WORKUS_DEPT D ON D.LEADER_NO = #{leaderNo}
+                            AND U.DEPT_NO = D.DEPT_NO)
+    </select>
+    <resultMap type="apvDetailViewDto" id="apvDetailResultMap">
+        <id property="no" column="apv_no"/>
+        <result property="commonText" column="apv_text"/>
+        <result property="toDate" column="apv_to_date"/>
+        <result property="fromDate" column="apv_from_date"/>
+        <result property="createdDate" column="apv_created_date"/>
+        <result property="title" column="apv_title"/>
+        <result property="categoryNo" column="apv_category_no"/>
+        <result property="categoryName" column="apv_category_name"/>
+        <result property="reqUserNo" column="user_no"/>
+        <result property="reason" column="apv_reason"/>
+        <result property="status" column="apv_status"/>
+        <result property="apvUserNo" column="apv_approver_no"/>
+        <result property="rejectionReason" column="apv_rejection_reason"/>
+        <collection property="optionTexts" ofType="hashmap">
+            <id property="textNo" column="apv_text_no"/>
+            <result property="textName" column="apv_text_name"/>
+            <result property="textValue" column="apv_text_value"/>
+        </collection>
+    </resultMap>
+    <select id="getReqDetailByApvNo" resultMap="apvDetailResultMap">
+        SELECT a.apv_no                 as apv_no
+             , a.apv_text               as apv_text
+             , a.apv_to_date            as apv_to_date
+             , a.apv_from_date          as apv_from_date
+             , a.apv_created_date       as apv_created_date
+             , a.apv_title              as apv_title
+             , a.apv_category_no        as apv_category_no
+             , c.apv_category_name      as apv_category_name
+             , a.user_no                as user_no
+             , a.apv_reason             as apv_reason
+             , a.apv_status             as apv_status
+             , a.apv_approver_no        as apv_approver_no
+             , a.apv_rejection_reason   as apv_rejection_reason
+             , t.apv_text_no            as apv_text_no
+             , t.APV_TEXT_NAME          as apv_text_name
+             , t.APV_TEXT_VALUE         as apv_text_value
+        FROM WORKUS_APPROVAL a
+        JOIN WORKUS_APPROVAL_CATEGORY c ON c.APV_CATEGORY_NO = a.APV_CATEGORY_NO
+        LEFT JOIN WORKUS_APPROVAL_TEXT_AREA t ON t.apv_no = a.apv_no
+        WHERE a.apv_no = #{apvNo}
+    </select>
+    <update id="updateApprovalStatusCompleted">
+        UPDATE
+            WORKUS_APPROVAL
+        SET
+            APV_STATUS = 'completed'
+          , APV_APPROVER_NO = #{reqDto.reqUserNo}
+        WHERE
+            APV_NO = #{reqDto.no}
+    </update>
+    <update id="updateApprovalStatusRejected">
+        UPDATE
+            WORKUS_APPROVAL
+        SET
+            APV_STATUS = 'rejected'
+          , APV_REJECTION_REASON = #{rejectDto.reason}
+        WHERE
+            APV_NO = #{rejectDto.no}
+    </update>
+</mapper>

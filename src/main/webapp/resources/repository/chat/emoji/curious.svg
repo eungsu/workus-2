@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- 노란색 원형 얼굴 (살짝 기울어진) -->
+  <g transform="rotate(-5, 50, 50)">
+    <circle cx="50" cy="50" r="45" fill="#FFD93D"/>
+    
+    <!-- 왼쪽 눈썹 (궁금한 표정) -->
+    <path d="M25 35 Q35 30 45 35" stroke="#000" stroke-width="3" fill="none">
+      <animate
+        attributeName="d"
+        values="M25 35 Q35 30 45 35;M25 33 Q35 28 45 33;M25 35 Q35 30 45 35"
+        dur="2s"
+        repeatCount="indefinite"/>
+    </path>
+    
+    <!-- 오른쪽 눈썹 -->
+    <path d="M55 38 Q65 40 75 38" stroke="#000" stroke-width="3" fill="none"/>
+    
+    <!-- 왼쪽 눈 -->
+    <circle cx="35" cy="42" r="5" fill="#000">
+      <animate
+        attributeName="r"
+        values="5;4;5"
+        dur="2s"
+        repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- 오른쪽 눈 -->
+    <circle cx="65" cy="42" r="5" fill="#000"/>
+    
+    <!-- 코 -->
+    <circle cx="50" cy="55" r="5" fill="#FF9B19"/>
+    
+    <!-- 입 (살짝 벌어진) -->
+    <path d="M40 70 Q50 75 60 70" stroke="#000" stroke-width="3" fill="none"/>
+  </g>
+  
+  <!-- 물음표 -->
+  <g transform="translate(75, 20) rotate(15)">
+    <text font-family="Arial" font-size="24" font-weight="bold" fill="#666">?</text>
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values="75,20; 73,18; 75,20"
+      dur="2s"
+      repeatCount="indefinite"/>
+  </g>
+  
+  <!-- 작은 물음표 -->
+  <g transform="translate(85, 30) rotate(15)">
+    <text font-family="Arial" font-size="16" font-weight="bold" fill="#666">?</text>
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values="85,30; 83,28; 85,30"
+      dur="2s"
+      begin="0.5s"
+      repeatCount="indefinite"/>
+  </g>
+</svg>

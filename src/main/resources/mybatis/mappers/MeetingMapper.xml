@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.workus.meeting.mapper.MeetingMapper">
+
+    <!-- Meeting selectMeetingByNo(Long meetingNo); -->
+    <select id="selectMeetingByNo" parameterType="Long" resultType="com.example.workus.meeting.vo.Meeting">
+        SELECT
+            MEETING_NO AS no,
+            MEETING_START_DATE AS startDate,
+            MEETING_END_DATE AS endDate,
+            MEETING_ROOM AS room,
+            MEETING_CONTENT AS content,
+            USER_NO as userNo
+        FROM
+            WORKUS_MEETING
+        WHERE
+            MEETING_NO = #{meetingNo}
+    </select>
+
+    <!-- List<Meeting> selectEventsByDateRange(
+            @Param("start") LocalDateTime startDateTime,
+            @Param("end") LocalDateTime endDateTime,
+            @Param("room") String room,
+            @Param("loginUser") LoginUser loginUser); -->
+    <select id="selectEventsByDateRange" resultType="Meeting">
+        SELECT
+            MEETING_NO AS no,
+            MEETING_START_DATE AS startDate,
+            MEETING_END_DATE AS endDate,
+            MEETING_ROOM AS room,
+            MEETING_CONTENT AS content,
+            USER_NO AS userNo
+        FROM
+            WORKUS_MEETING
+        WHERE
+            MEETING_START_DATE &gt;= #{start}
+            AND MEETING_END_DATE &lt;= #{end}
+            AND USER_NO = #{loginUser.no}
+    </select>
+
+    <!-- List<Meeting> selectEventsByDateRange(
+            @Param("start") LocalDateTime startDateTime,
+            @Param("end") LocalDateTime endDateTime,
+            @Param("room") String room -->
+    <select id="selectAllEventsByDateRange" resultType="Meeting">
+        SELECT
+            MEETING_NO AS no,
+            MEETING_START_DATE AS startDate,
+            MEETING_END_DATE AS endDate,
+            MEETING_ROOM AS room,
+            MEETING_CONTENT AS content,
+            USER_NO AS userNo
+        FROM
+            WORKUS_MEETING
+        WHERE
+            MEETING_START_DATE >= #{start}
+            AND MEETING_END_DATE &lt;= #{end}
+    </select>
+
+    <!-- void insertMeeting(@Param("meeting") Meeting meeting); -->
+    <insert id="insertMeeting">
+        insert into WORKUS_MEETING
+        (MEETING_START_DATE, MEETING_END_DATE, MEETING_CONTENT, MEETING_ROOM, USER_NO)
+        values
+        (#{meeting.startDate}, #{meeting.endDate}, #{meeting.content}, #{meeting.room}, #{meeting.userNo})
+
+        <selectKey resultType="Long" keyProperty="meeting.no" keyColumn="MEETING_NO" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <!-- void deleteMeeting(@Param("eventId") Long eventId); -->
+    <delete id="deleteMeeting">
+        DELETE FROM WORKUS_MEETING
+        WHERE MEETING_NO = #{eventId}
+    </delete>
+
+    <!-- void updateMeeting(@Param("meeting") Meeting meeting); -->
+    <update id="updateMeeting">
+        UPDATE WORKUS_MEETING
+        SET
+            MEETING_START_DATE = #{meeting.startDate},
+            MEETING_END_DATE = #{meeting.endDate},
+            MEETING_ROOM = #{meeting.room},
+            MEETING_CONTENT = #{meeting.content}
+
+        WHERE MEETING_NO = #{meeting.no}
+    </update>
+
+    <!-- 일정 번호와 사용자 번호를 기준으로 일정 조회 -->
+    <select id="selectMeetingByNoAndUser" parameterType="map" resultType="com.example.workus.meeting.vo.Meeting">
+        SELECT
+            MEETING_NO AS no,
+            MEETING_START_DATE AS startDate,
+            MEETING_END_DATE AS endDate,
+            MEETING_ROOM AS room,
+            MEETING_CONTENT AS content
+        FROM
+            WORKUS_MEETING
+        WHERE
+            MEETING_NO = #{meetingNo}
+            AND user_no = #{userNo}
+    </select>
+
+
+
+</mapper>

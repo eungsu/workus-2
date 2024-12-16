@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.workus.chat.mapper.ChatMapper">
+    <insert id="insertChat">
+        insert into WORKUS_CHAT
+        (CHAT_CONTENT, CHAT_FILE_SRC, CHAT_IS_FIRST, USER_NO, CHATROOM_NO, CHAT_TIME, EMOJI_NO)
+        values
+        (#{chat.content}, #{chat.fileSrc}, #{chat.isFirst}, #{chat.user.no}, #{chat.chatroom.no}, #{chat.time}, #{chat.emoji.no})
+        <selectKey keyProperty="chat.no" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="getAllChatsByChatroomNo" resultType="Chat">
+        select
+            C.CHAT_NO as "no"
+            , C.CHAT_CONTENT as "content"
+            , C.CHAT_TIME as "time"
+            , C.CHAT_FILE_SRC as "fileSrc"
+            , C.CHAT_IS_FIRST as "isFirst"
+            , U.USER_NO as "user.no"
+            , U.USER_NAME as "user.name"
+            , U.USER_PROFILE_SRC as "user.profileSrc"
+            , C.CHATROOM_NO as "chatroom.no"
+            , C.EMOJI_NO as "emoji.no"
+            , E.EMOJI_FILE_SRC as "emoji.fileSrc"
+        from
+            WORKUS_CHAT C
+        left join
+            WORKUS_USERS U
+        on
+            C.USER_NO = U.USER_NO
+        left join
+            WORKUS_CHAT_EMOJI E
+        on
+            C.EMOJI_NO = E.EMOJI_NO
+        where
+            C.CHATROOM_NO = #{chatroomNo}
+        and
+            C.CHAT_TIME <![CDATA[>]]> (select
+                                        H.CHATROOM_ENTER_TIME
+                                    from
+                                        WORKUS_CHATROOM_HISTORY H
+                                    inner join
+                                        WORKUS_USERS LU
+                                    on
+                                        LU.USER_NO = H.USER_NO
+                                    where
+                                        LU.USER_NO = #{userNo}
+                                    and
+                                        H.CHATROOM_NO = #{chatroomNo}
+                                    and
+                                        H.CHATROOM_OUT_TIME is null
+                                    order by
+                                        H.CHATROOM_ENTER_TIME desc
+                                    limit 1)
+        order by CHAT_TIME DESC
+        limit #{begin}, 10
+    </select>
+
+    <select id="checkDailyFirstChat" resultType="java.lang.Character">
+        select
+            case
+                when exists (
+                    select
+                        1
+                    from
+                        WORKUS_CHAT
+                    where
+                        DATE_FORMAT(CHAT_TIME, '%Y-%m-%d') = DATE_FORMAT(#{chat.time}, '%Y-%m-%d')
+                    and
+                        CHATROOM_NO = #{chat.chatroom.no}
+                        )
+                    then 'Y'
+                else 'N'
+                end as CHAT_EXISTS
+    </select>
+
+    <select id="getTotalRows" resultType="int">
+        select
+            count(1)
+        from
+            WORKUS_CHAT C
+        inner join
+            WORKUS_USERS U
+        on
+            C.USER_NO = U.USER_NO
+        where
+            C.CHATROOM_NO = #{chatroomNo}
+          and
+            CHAT_TIME <![CDATA[>]]> (select
+                                        H.CHATROOM_ENTER_TIME
+                                    from
+                                        WORKUS_CHATROOM_HISTORY H
+                                    inner join
+                                        WORKUS_USERS LU
+                                    on
+                                        LU.USER_NO = H.USER_NO
+                                    where
+                                        LU.USER_NO = #{userNo}
+                                    and
+                                        H.CHATROOM_NO = #{chatroomNo}
+                                    and
+                                        H.CHATROOM_OUT_TIME is null
+                                    order by
+                                        H.CHATROOM_ENTER_TIME desc
+                                    limit 1)
+    </select>
+
+    <select id="getAllEnterUserNamesByChatroomNoAndChatTime" resultType="Chat">
+        select
+            U.USER_NAME as "user.name"
+            , H.CHATROOM_ENTER_TIME as time
+        from
+            WORKUS_CHATROOM_HISTORY H
+        inner join
+            WORKUS_USERS U
+        on
+            H.USER_NO = U.USER_NO
+        where
+            H.CHATROOM_NO = #{chatroomNo}
+        and
+            H.CHATROOM_ENTER_TIME
+        between #{firstChatTime} and #{lastChatTime}
+    </select>
+
+    <select id="getAllOutUserNameByChatroomNoAndChatTime" resultType="Chat">
+        select
+            U.USER_NAME as "user.name"
+             , H.CHATROOM_OUT_TIME as time
+        from
+            WORKUS_CHATROOM_HISTORY H
+        inner join
+            WORKUS_USERS U
+        on
+            H.USER_NO = U.USER_NO
+        where
+            H.CHATROOM_NO = #{chatroomNo}
+        and
+            H.CHATROOM_OUT_TIME
+        between #{firstChatTime} and #{lastChatTime}
+    </select>
+
+    <select id="getChatByChatNo" resultType="Chat">
+        select
+            CHAT_NO as no
+            , CHAT_CONTENT as content
+            , CHAT_TIME as time
+            , CHAT_FILE_SRC as fileSrc
+            , CHAT_IS_FIRST as isFirst
+            , USER_NO as "user.no"
+            , CHATROOM_NO as "chatroom.no"
+        from
+            WORKUS_CHAT
+        where
+            CHAT_NO = #{chatNo}
+    </select>
+
+    <select id="getEmojiByEmojiNo" resultType="Emoji">
+        select
+            EMOJI_NO as no
+             , EMOJI_FILE_SRC as fileSrc
+             , EMOJI_PREVIEW_FILE_SRC as previewFileSrc
+        from
+            WORKUS_CHAT_EMOJI
+        where
+            EMOJI_NO = #{emojiNo}
+    </select>
+
+    <select id="getEmojiNoByTagName" resultType="integer">
+        select
+            E.EMOJI_NO as no
+        from
+            WORKUS_CHAT_EMOJI_TAG T
+        inner join
+            WORKUS_CHAT_EMOJI E
+        on
+            T.EMOJI_NO = E.EMOJI_NO
+        where
+            T.TAG_NAME like CONCAT('%', #{tagName}, '%')
+    </select>
+</mapper>

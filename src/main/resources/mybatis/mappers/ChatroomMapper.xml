@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.workus.chat.mapper.ChatroomMapper">
+
+    <insert id="addChatroomHistory">
+        insert into WORKUS_CHATROOM_HISTORY
+            (CHATROOM_NO, USER_NO, CHATROOM_CON_TIME)
+        values (#{chatroomNo}, #{participantUserNo}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <insert id="addChatroom">
+        insert into WORKUS_CHATROOM
+        (CHATROOM_TITLE, USER_NO)
+        values
+        (#{chatroom.title}, #{chatroom.userNo})
+        <selectKey keyProperty="chatroom.no" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="updateChatroomConTime">
+        update
+            WORKUS_CHATROOM_HISTORY
+        set CHATROOM_CON_TIME = CURRENT_TIMESTAMP
+        where CHATROOM_NO = #{chatroomNo}
+          and USER_NO = #{userNo}
+        and CHATROOM_OUT_TIME is null
+    </update>
+
+    <select id="getChatroomNoByUserNo" resultType="Long">
+        select CHATROOM_NO
+        from WORKUS_CHATROOM_HISTORY
+        where USER_NO = #{userNo}
+          and CHATROOM_OUT_TIME is null
+    </select>
+
+    <select id="getChatRoomInMenuByChatroomNo" resultType="ChatroomDto">
+        select R.CHATROOM_NO  as chatroomNo
+             , R.CHATROOM_TITLE as chatroomTitle
+             , CASE
+                WHEN C.CHAT_CONTENT IS NULL THEN SUBSTRING(C.CHAT_FILE_SRC, 14)
+                ELSE C.CHAT_CONTENT
+            END as lastChat
+             , C.CHAT_TIME    as lastChatDate
+             , U.USER_NAME    as "lastChatAuthor.name"
+        from WORKUS_CHAT C
+                 inner join
+             WORKUS_CHATROOM R
+             on
+                 R.CHATROOM_NO = C.CHATROOM_NO
+                 inner join
+             WORKUS_USERS U
+             on
+                 U.USER_NO = C.USER_NO
+        where R.CHATROOM_NO = #{chatroomNo}
+        order by C.CHAT_TIME desc limit 1
+    </select>
+
+    <resultMap id="chatroomInfoMap" type="ChatroomInfoDto">
+        <result property="chatroomTitle" column="CHATROOM_TITLE"/>
+        <collection property="users" ofType="User">
+            <id property="no" column="USER_NO"/>
+            <id property="id" column="USER_ID"/>
+            <id property="name" column="USER_NAME"/>
+            <id property="profileSrc" column="USER_PROFILE_SRC"/>
+        </collection>
+    </resultMap>
+
+    <select id="getChatroomInfoByChatroomNo" resultMap="chatroomInfoMap">
+        select R.CHATROOM_TITLE
+             , U.USER_NO
+             , U.USER_ID
+             , U.USER_NAME
+             , U.USER_PROFILE_SRC
+        from WORKUS_CHATROOM_HISTORY H
+                 inner join
+             WORKUS_USERS U
+             on
+                 H.USER_NO = U.USER_NO
+                 inner join
+             WORKUS_CHATROOM R
+             on
+                 H.CHATROOM_NO = R.CHATROOM_NO
+        where H.CHATROOM_NO = #{chatroomNo}
+          and H.CHATROOM_OUT_TIME is null
+    </select>
+
+    <select id="getNotReadCount" resultType="int">
+        select count(1)
+        from WORKUS_CHAT C
+                 inner join
+             WORKUS_CHATROOM_HISTORY H
+             on
+                 C.CHATROOM_NO = H.CHATROOM_NO
+        where H.CHATROOM_NO = #{chatroomNo}
+          and H.USER_NO = #{userNo}
+          and H.CHATROOM_CON_TIME <![CDATA[<]]> C.CHAT_TIME
+        and H.CHATROOM_OUT_TIME is null
+    </select>
+
+    <select id="getAllUsersByDeptName" resultType="ParticipantInChatroomDto">
+        select U.USER_NO       as userNo
+             , U.USER_NAME     as userName
+             , P.POSITION_NAME as positionName
+        from WORKUS_USERS U
+                 inner join
+             WORKUS_POSITION P
+             on
+                 U.POSITION_NO = P.POSITION_NO
+                 inner join
+             WORKUS_DEPT D
+             on
+                 D.DEPT_NO = U.DEPT_NO
+        where D.DEPT_NAME = #{deptName}
+    </select>
+
+    <select id="getChatroomByChatroomNo" resultType="Chatroom">
+        select CHATROOM_NO as no
+            , CHATROOM_TITLE as title
+            , USER_NO as userNo
+        from
+            WORKUS_CHATROOM
+        where
+            CHATROOM_NO = #{chatroomNo}
+    </select>
+
+    <update id="outChatroomByChatroomNo">
+        update
+            WORKUS_CHATROOM_HISTORY
+        set
+            CHATROOM_OUT_TIME = CURRENT_TIMESTAMP
+        where
+            CHATROOM_NO = #{chatroomNo}
+        and
+            USER_NO = #{userNo}
+        and
+            CHATROOM_OUT_TIME is null
+    </update>
+</mapper>

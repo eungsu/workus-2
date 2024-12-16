@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.workus.community.mapper.CommunityMapper">
+
+    <!--
+         List<HashTag> getHashTags(@Param("feedNo") int feedNo);
+    -->
+    <select id="getHashTagsByFeedNo" resultType="HashTag">
+        SELECT
+            H.HASHTAG_NO    as no,
+        H.HASHTAG_NAME  as name
+        FROM
+            WORKUS_HASHTAG H
+        WHERE
+            H.COMMUNITY_NO = #{feedNo}
+    </select>
+
+    <!--
+        int getTotalRows();
+     -->
+    <select id="getTotalRows"  resultType="int">
+        select
+            count(*)
+        from
+            WORKUS_COMMUNITY
+    </select>
+
+    <!--
+        Feed getFeedByNo(@Param("feedNo") long feedNo);
+    -->
+    <select id="getFeedByNo" resultType="Feed">
+        select
+            B.community_no as no
+        , B.COMMUNITY_TITLE as title
+        , B.COMMUNITY_CONTENT as content
+        , B.COMMUNITY_MEDIA_URL as mediaUrl
+        , B.COMMUNITY_MEDIA_TYPE as mediaType
+        , B.COMMUNITY_CREATED_DATE as createDate
+        , B.COMMUNITY_UPDATED_DATE as updateDate
+        , B.USER_NO as "user.no"
+        , U.USER_NAME as "user.name"
+        , U.USER_PROFILE_SRC as "user.profileSrc"
+        from
+            WORKUS_COMMUNITY B
+        inner join
+            WORKUS_USERS U
+        on
+            B.USER_NO = U.USER_NO
+        where B.COMMUNITY_NO = #{feedNo}
+    </select>
+
+    <!--
+         List<Reply> getReplysByFeedNo(@Param("feedNo") long feedNo);
+    -->
+    <select id="getReplysByFeedNo" resultType="Reply">
+        select
+            R.REPLY_NO AS no,
+            R.REPLY_CONTENT AS content,
+            R.REPLY_CREATED_DATE AS createdDate,
+            B.COMMUNITY_NO AS "feed.no",
+            U.USER_NO AS "user.no",
+            U.USER_NAME AS "user.name"
+        from
+            WORKUS_REPLY R
+            INNER JOIN
+            WORKUS_COMMUNITY B
+        ON
+            B.COMMUNITY_NO = R.COMMUNITY_NO
+            INNER JOIN
+            WORKUS_USERS U
+            ON
+            R.USER_NO = U.USER_NO
+
+        WHERE B.COMMUNITY_NO = #{feedNo}
+        ORDER BY R.REPLY_NO desc;
+    </select>
+
+    <!--
+        List<Feed> getSearchFeeds(Map<String, Object> condition);
+    -->
+    <select id="getSearchFeeds" resultType="Feed">
+        select
+        x.*
+        from (select
+        row_number() over (order by B.community_no desc) rn
+        , B.community_no as no
+        , B.COMMUNITY_TITLE as title
+        , B.COMMUNITY_CONTENT as content
+        , B.COMMUNITY_MEDIA_URL as mediaUrl
+        , B.COMMUNITY_MEDIA_TYPE as mediaType
+        , B.COMMUNITY_CREATED_DATE as createDate
+        , B.COMMUNITY_UPDATED_DATE as updateDate
+        , B.USER_NO as "user.no"
+        , U.USER_NAME as "user.name"
+        , U.USER_PROFILE_SRC as "user.profileSrc"
+        from
+        WORKUS_COMMUNITY B
+        INNER JOIN
+        WORKUS_USERS U
+        ON
+        B.USER_NO = U.USER_NO
+        <where>
+            <if test="condition.opt != null">
+                <choose>
+                    <when test="condition.opt == 'title'">
+                        and B.COMMUNITY_TITLE LIKE CONCAT('%', #{condition.keyword}, '%')
+                    </when>
+                    <when test="condition.opt == 'content'">
+                        and B.COMMUNITY_CONTENT LIKE CONCAT('%', #{condition.keyword}, '%')
+                    </when>
+                    <when test="condition.opt == 'hashtag'">
+                        and B.COMMUNITY_NO IN (SELECT DISTINCT H.COMMUNITY_NO
+                                               FROM WORKUS_HASHTAG H
+                                               WHERE H.HASHTAG_NAME LIKE CONCAT('%', #{condition.keyword}, '%'))
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ) x
+        where x.rn between #{condition.begin} and #{condition.end}
+    </select>
+
+    <!--
+        int getTotalRows(@Param("condition")Map<String, Object> condition);
+    -->
+    <select id="getTotalRows2" resultType="int">
+        select
+            COUNT(*)
+        from
+        WORKUS_COMMUNITY B
+        LEFT JOIN
+        WORKUS_HASHTAG H
+        ON B.COMMUNITY_NO = H.COMMUNITY_NO
+        <where>
+            <if test="condition.opt != null">
+                <choose>
+                    <when test="condition.opt == 'title'">
+                        and B.COMMUNITY_TITLE like CONCAT('%', #{condition.keyword}, '%')
+                    </when>
+                    <when test="condition.opt == 'content'">
+                        and B.COMMUNITY_CONTENT like CONCAT('%', #{condition.keyword}, '%')
+                    </when>
+                    <when test="condition.opt == 'hashtag'">
+                        and H.HASHTAG_NAME like CONCAT('%', #{condition.keyword}, '%')
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+    <!--
+     void insertFeed(@Param("feed") Feed feed);
+    -->
+    <insert id="insertFeed">
+        insert into WORKUS_COMMUNITY
+        (COMMUNITY_TITLE
+        ,COMMUNITY_CONTENT
+        ,COMMUNITY_MEDIA_URL
+        ,COMMUNITY_MEDIA_TYPE
+        ,USER_NO)
+        values
+        (#{feed.title}
+        ,#{feed.content}
+        ,#{feed.mediaUrl}
+        ,#{feed.mediaType}
+        ,#{feed.user.no})
+
+        <selectKey resultType="Long" keyProperty="feed.no" keyColumn="community_no" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <!--
+        void insertHashTag(@Param("hashTag") HashTag hashTag);
+    -->
+    <insert id="insertHashTag">
+        insert into WORKUS_HASHTAG
+        (HASHTAG_NAME
+        ,COMMUNITY_NO)
+        values
+            (#{hashTag.name}
+            ,#{hashTag.feed.no})
+    </insert>
+
+    <!--
+         void insertReply(@Param("reply")Reply reply);
+    -->
+    <insert id="insertReply">
+        insert into WORKUS_REPLY
+        (REPLY_CONTENT,USER_NO,COMMUNITY_NO)
+        values
+        (#{reply.content},#{reply.user.no},#{reply.feed.no})
+
+        <selectKey resultType="Long" keyProperty="reply.no" keyColumn="REPLY_NO" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+
+    <!--
+        Reply getReplyByFeedNo(@Param("feedNo") long feedNo);
+    -->
+    <select id="getReplyByFeedNo" resultType="Reply">
+        select
+            R.REPLY_NO AS no,
+            R.REPLY_CONTENT AS content,
+            R.REPLY_CREATED_DATE AS createdDate,
+            B.COMMUNITY_NO AS "feed.no",
+            U.USER_NO AS "user.no",
+            U.USER_NAME AS "user.name"
+        from
+            WORKUS_REPLY R
+            INNER JOIN
+            WORKUS_COMMUNITY B
+        ON
+            B.COMMUNITY_NO = R.COMMUNITY_NO
+            INNER JOIN
+            WORKUS_USERS U
+            ON
+            R.USER_NO = U.USER_NO
+        WHERE B.COMMUNITY_NO = #{feedNo}
+        ORDER BY R.REPLY_NO DESC
+            LIMIT 1
+    </select>
+    <!--    void deleteReplysByFeedNo(@Param("feedNo") long feedNo);
+            void deleteLikeByFeedNo(@Param("feedNo") long feedNo);
+            void deleteHashTagsByFeedNo(@Param("feedNo") long feedNo);
+            void deleteFeedsByFeedNo(@Param("feedNo") long feedNo,@Param("userNo") long userNo);
+    -->
+    <delete id="deleteReplysByFeedNo">
+        delete from WORKUS_REPLY
+        where COMMUNITY_NO = #{feedNo}
+    </delete>
+    <delete id="deleteLikeByFeedNo">
+        delete from WORKUS_LIKE
+        where COMMUNITY_NO = #{feedNo}
+    </delete>
+    <delete id="deleteHashTagsByFeedNo">
+        delete from WORKUS_HASHTAG
+        where COMMUNITY_NO = #{feedNo}
+    </delete>
+    <delete id="deleteFeedsByFeedNo">
+        delete from WORKUS_COMMUNITY
+        where  COMMUNITY_NO = #{feedNo} and USER_NO = #{userNo}
+    </delete>
+
+
+    <!--
+        void updateFeed(@Param("feed") Feed feed);
+    -->
+    <update id="updateFeed">
+        update WORKUS_COMMUNITY
+        set
+             COMMUNITY_TITLE        = #{feed.title}
+            ,COMMUNITY_CONTENT      = #{feed.content}
+            ,COMMUNITY_MEDIA_URL    = #{feed.mediaUrl}
+            ,COMMUNITY_MEDIA_TYPE   = #{feed.mediaType}
+            ,COMMUNITY_CREATED_DATE = #{feed.createDate}
+            ,COMMUNITY_UPDATED_DATE = now()
+        where COMMUNITY_NO = #{feed.no} and USER_NO = #{feed.user.no}
+    </update>
+
+    <!--
+         void updateHashTag(@Param("hashTag") HashTag hashTag);
+    -->
+    <update id="updateHashTag">
+        update WORKUS_HASHTAG
+        set
+            HASHTAG_NAME = #{hashTag.name}
+    </update>
+
+
+    <!--
+        int getlikeCountByFeedNo(@Param("feedNo") long feedNo);
+    -->
+    <select id="getlikeCountByFeedNo" resultType="int">
+        select count(*)
+        from WORKUS_LIKE
+        where COMMUNITY_NO = #{feedNo}
+    </select>
+    <!--
+        List<String> getLikeUsersByFeedNo(@Param("feedNo") long feedNo);
+    -->
+    <select id="getLikeUsersByFeedNo" resultType="String">
+        select U.USER_NAME
+        from WORKUS_LIKE L, WORKUS_USERS U
+        where LIKE_NO = (select max(like_no)
+                         from WORKUS_LIKE x
+                         where x.COMMUNITY_NO = #{feedNo})
+          and L.USER_NO = U.USER_NO
+    </select>
+    <!--
+       boolean isLiked(@Param("feedNo") long feedNo,@Param("userNo") long userNo);
+    -->
+    <select id="isLiked" resultType="boolean">
+        select count(*) > 0
+        from WORKUS_LIKE
+        where COMMUNITY_NO = #{feedNo} and USER_NO = #{userNo}
+    </select>
+
+    <!--
+         void insertLike(@Param("like") Like like);
+    -->
+    <insert id="insertLike">
+        insert into WORKUS_LIKE
+        (COMMUNITY_NO,USER_NO)
+        values
+        (#{like.feed.no},#{like.user.no})
+        <selectKey resultType="Long" keyProperty="like.no" keyColumn="LIKE_NO" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <!--
+           void cancelLikeByFeedNo(@Param("feedNo") long feedNo,@Param("userNo") long userNo);
+    -->
+    <delete id="cancelLikeByFeedNo">
+        delete from WORKUS_LIKE
+        where COMMUNITY_NO = #{feedNo} and USER_NO = #{userNo}
+    </delete>
+
+    <!--
+       List<Like> getLikesByFeedNo((@Param("feedNo") long feedNo);
+    -->
+    <select id="getLikesByFeedNo">
+        SELECT LIKE_NO as no,
+               U.USER_NAME as "user.name"
+        FROM WORKUS_LIKE L
+        JOIN WORKUS_USERS U ON L.USER_NO = U.USER_NO
+        WHERE L.COMMUNITY_NO = #{feedNo}
+        ORDER BY LIKE_NO DESC
+    </select>
+
+    <!--
+        Reply getReplyByReplyNo(@Param("replyNo") long replyNo);
+    -->
+    <select id="getReplyByReplyNo">
+        select
+            R.REPLY_NO AS no,
+            R.REPLY_CONTENT AS content,
+            R.REPLY_CREATED_DATE AS createdDate,
+            B.COMMUNITY_NO AS "feed.no",
+            U.USER_NO AS "user.no",
+            U.USER_NAME AS "user.name"
+        from
+            WORKUS_REPLY R
+            INNER JOIN
+            WORKUS_COMMUNITY B
+        ON
+            B.COMMUNITY_NO = R.COMMUNITY_NO
+            INNER JOIN
+            WORKUS_USERS U
+            ON
+            R.USER_NO = U.USER_NO
+        WHERE B.COMMUNITY_NO = R.COMMUNITY_NO
+        and R.REPLY_NO = #{replyNo}
+        ORDER BY R.REPLY_NO DESC
+    </select>
+
+    <!--
+        void deleteReplyByReplyNo(@Param("feedNo") long feedNo);
+    -->
+    <delete id="deleteReplyByReplyNo">
+       delete from WORKUS_REPLY
+       where REPLY_NO = #{replyNo}
+    </delete>
+
+</mapper>

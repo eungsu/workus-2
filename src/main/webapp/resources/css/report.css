@@ -1,0 +1,113 @@
+.report-container {
+    max-width: 1000px;
+    margin: auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.report-header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+.report-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+.button-group {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.button-group button {
+    padding: 8px 15px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+}
+.btn-list { background-color: #007bff; }
+.btn-edit { background-color: #ff9800; }
+.btn-delete { background-color: #f44336; }
+
+/* 부서와 작성자 정보 표시 스타일 */
+.meta-info {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
+}
+.meta-info div {
+    margin-left: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+th, td {
+    border: 1px solid #000;
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background-color: #f0f0f0;
+}
+.section-header {
+    background-color: #e0e0e0;
+    font-weight: bold;
+}
+.status-ongoing {
+    background-color: #c5e0b4;
+}
+.status-complete {
+    background-color: #bdd7ee;
+}
+.highlight {
+    background-color: #ffc000;
+}
+/* 입력 폼 스타일 */
+.form-group {
+    margin-bottom: 15px;
+}
+label {
+    font-weight: bold;
+    display: block;
+}
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+select {
+    font-size: 14px;
+}
+.date-range {
+    display: flex;
+    gap: 10px;
+}
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+/* 버튼 스타일 통일 */
+.btn-cancel, .btn-save {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+}
+.btn-cancel {
+    background-color: #f44336; /* 빨간색 */
+}
+.btn-save {
+    background-color: #4CAF50; /* 초록색 */
+}

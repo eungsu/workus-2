@@ -1,0 +1,329 @@
+@charset "UTF-8";
+
+.lnb li a {
+    position: relative;
+    z-index: 1;
+    padding: 4px 2px;
+}
+
+.lnb li a:after {
+    content: "";
+    left: 0;
+    bottom: 3px;
+    width: 0;
+    height: 9px;
+    z-index: -1;
+    background-color: #e91e63;
+    position: absolute;
+    display: inline-block;
+    transition: all 0.3s ease;
+    opacity: 0.1;
+}
+
+.lnb li a:hover:after {
+    width: 100%;
+}
+
+.lnb li.on a:after {
+    opacity: 0.3;
+    width: 100%;
+}
+
+.approvalDepth {
+    border: none;
+}
+
+.approvalDepth .accordion-item {
+    background-color: transparent;
+    border: none;
+}
+
+.approvalDepth .accordion-item:last-of-type .accordion-button.collapsed, .approvalDepth .accordion-button:not(.collapsed) {
+    padding: 16px 0;
+    border-radius: 0;
+    background-color: transparent;
+    color: #1f1f1f;
+}
+
+.accordion-button {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+}
+
+.lnb .list1 li {
+    padding: 10px 0;
+}
+
+.lnb .list1 {
+    margin-bottom: 5px;
+}
+
+.lnb .list2 li {
+    padding: 2px 1px;
+}
+
+.containerW {
+    display: flex;
+    width: 100%;
+    margin-top: 32px;
+}
+
+.sidebar {
+    width: 230px;
+    min-height: calc(100vh - 165px);
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    box-shadow: 1px 3px 4px 2px #f3f3f3;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    font-size: 17px;
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+.sidebar li:hover, .sidebar li.active {
+    background-color: #f3f3f3;
+}
+
+.content {
+    flex: 1;
+    padding: 0 20px 0 40px;
+    margin: 0;
+}
+
+.form {
+    display: none;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 0;
+    min-height: calc(100vh - 165px);
+    box-shadow: 1px 3px 4px 2px #f3f3f3;
+}
+
+.form.active {
+    display: block;
+}
+
+.form .text-center {
+    margin: 20px 0 36px;
+}
+
+.form table, .tableStyle {
+    font-size: 17px;
+    border: 1px solid #ddd;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.form table textarea {
+    width: 100%;
+    resize: none;
+    border: 1px solid #ddd;
+    border-radius: 1px;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.form .table > :not(caption) > * > * , .tableStyle > :not(caption) > * > *{
+    padding: 15px 12px;
+    vertical-align: middle;
+}
+
+.form table th.table-active {
+    font-weight: normal;
+    background-color: #f1f1f1;
+    box-shadow: none;
+}
+
+.form table .mgl5.mgr5 {
+    font-size: 20px;
+    vertical-align: middle
+}
+
+.btnW input {
+    border-radius: 6px;
+}
+
+.btnW button {
+    margin-left: 10px;
+}
+
+form .ql-editor {
+    height: 400px;
+}
+
+.titleDefault {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.require {
+    position: relative;
+}
+
+.require:after {
+    content: "*";
+    display: inline-block;
+    font-size: 17px;
+    position: relative;
+    right: -7px;
+    top: 0;
+    color: #e91e63;
+}
+
+
+.dayCheck {
+    border-radius: 20px;
+    background-color: #737373;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+    color: #fff;
+    padding: 3px 12px;
+    margin-left: 10px;
+}
+
+.dayTotal {
+    min-width: 10px;
+    display: inline-block;
+}
+
+/* my */
+.containerW > div {
+    width: 100%;
+}
+
+.noData {
+    text-align: center;
+    height: calc(100vh - 220px);
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    align-items: center;
+    justify-content: center;
+}
+
+.noDataImg {
+    opacity: 0.5;
+    filter: grayscale(80%);
+    width: 5%;
+    margin: 50px 0 20px;
+}
+
+.noDataText {
+    font-size: 16px;
+}
+
+table tr th {
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.buttonW button {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 5px 15px;
+    border: 2px solid #e91e63;
+    color: #e91e63;
+    font-size: 16px;
+    transition: all 0.2s ease-in;
+    font-weight: bold;
+}
+
+.buttonW button:hover {
+    border: 2px solid #1f1f1f;
+    color: #fff;
+    background-color: #1f1f1f;
+}
+
+.tableW table {
+    font-size: 15px;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    border:1px solid #ddd;
+}
+
+.tableStyle>:not(caption)>*>* {padding: 0.7rem 0.6rem;}
+
+.form-switch {
+    font-size: 17px;
+}
+
+.page-item.active .page-link {
+    background-color: #1f1f1f;
+    color: #fff;
+    border: 1px solid #1f1f1f;
+}
+
+table .badge {
+    font-weight: normal;
+    font-size: 15px;
+}
+
+table label {
+    vertical-align: text-top;
+}
+
+table a.link:hover {
+    text-decoration: underline;
+    text-underline-position: under;
+}
+
+.containerW > div.additionalW {
+    margin-left: 30px;
+    width: 300px;
+}
+
+.userInfoHeader {
+    background: #0f132a;
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 18px;
+}
+
+.userInfoW {
+    border: 1px solid #ddd;
+    padding: 26px 12px;
+}
+
+.userInfoW img {
+    width: 4rem;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.userInfo {
+    font-size: 16px;
+}
+
+.btn-custom2 {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #0f132a;
+    --bs-btn-border-color: #0f132a;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #232957FF;
+    --bs-btn-hover-border-color: #232957FF;
+}
+
+.description {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+#rejectedReason {
+    height: 120px;
+}
+
+.editorArea, .editorArea .ql-container.ql-snow {border:none;}
+.editorArea td {border:none; padding:0; box-shadow:none}
+
+.rejectionStatus {padding:26px; border:1px solid #ddd; border-top:none;}

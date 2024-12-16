@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.workus.calendar.mapper.CalendarMapper">
+
+    <!-- 내,팀 일정 조회 -->
+    <select id="selectTeamAndPersonalEvents" resultType="Calendar">
+        SELECT
+            calendar_no AS no,
+            calendar_name AS name,
+            calendar_content AS content,
+            calendar_start_date AS startDate,
+            calendar_end_date AS endDate,
+            calendar_location AS location,
+            calendar_division AS division,
+            user_no AS userNo,
+            dept_no AS deptNo
+        FROM
+            WORKUS_CALENDAR
+        WHERE
+            USER_NO = #{userNo}
+            AND CALENDAR_START_DATE >= #{startDate}
+            AND CALENDAR_END_DATE &lt;= #{endDate}
+        UNION
+        SELECT
+            calendar_no AS no,
+            calendar_name AS name,
+            calendar_content AS content,
+            calendar_start_date AS startDate,
+            calendar_end_date AS endDate,
+            calendar_location AS location,
+            calendar_division AS division,
+            user_no AS userNo,
+            dept_no AS deptNo
+        FROM
+            WORKUS_CALENDAR
+        WHERE
+            DEPT_NO = #{deptNo}
+            AND CALENDAR_START_DATE >= #{startDate}
+            AND CALENDAR_END_DATE &lt;= #{endDate}
+            <if test="division != null and division.size() > 0">
+                AND CALENDAR_DIVISION IN
+                <foreach item="item" collection="division" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="division == null or division.size() == 0">
+                AND CALENDAR_DIVISION = 0
+            </if>
+    </select>
+
+    <!-- 개인 일정 조회 -->
+    <select id="selectPersonalEvents" resultType="Calendar">
+        SELECT
+            calendar_no AS no,
+            calendar_name AS name,
+            calendar_content AS content,
+            calendar_start_date AS startDate,
+            calendar_end_date AS endDate,
+            calendar_location AS location,
+            calendar_division AS division,
+            user_no AS userNo,
+            dept_no AS deptNo
+        FROM
+            WORKUS_CALENDAR
+        WHERE
+            USER_NO = #{userNo}
+            AND CALENDAR_START_DATE >= #{startDateTime}
+            AND CALENDAR_END_DATE &lt;= #{endDateTime}
+            <if test="division != null and division.size() > 0">
+                AND CALENDAR_DIVISION IN
+                <foreach item="item" collection="division" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        ORDER BY
+            CALENDAR_START_DATE ASC;
+    </select>
+
+    <!-- 팀 일정 조회 -->
+    <select id="selectTeamEvents" resultType="Calendar">
+        SELECT
+            calendar_no AS no,
+            calendar_name AS name,
+            calendar_content AS content,
+            calendar_start_date AS startDate,
+            calendar_end_date AS endDate,
+            calendar_location AS location,
+            calendar_division AS division,
+            user_no AS userNo,
+            dept_no AS deptNo
+        FROM
+            WORKUS_CALENDAR
+        WHERE
+            DEPT_NO = #{deptNo}
+            AND CALENDAR_START_DATE >= #{startDateTime}
+            AND CALENDAR_END_DATE &lt;= #{endDateTime}
+            <if test="division != null and division.size() > 0">
+                AND CALENDAR_DIVISION IN
+                <foreach item="item" collection="division" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        ORDER BY
+            CALENDAR_START_DATE ASC;
+    </select>
+
+    <select id="selectMyCalendarEvents">
+        SELECT
+            calendar_no AS no,
+            calendar_name AS name,
+            calendar_content AS content,
+            calendar_start_date AS startDate,
+            calendar_end_date AS endDate,
+            calendar_location AS location,
+            calendar_division AS division,
+            user_no AS userNo
+        FROM
+            calendar_events
+        WHERE
+            created_by = #{userNo} -- 현재 사용자가 작성한 일정만 가져오기
+            AND (start_date BETWEEN #{start} AND #{end} OR end_date BETWEEN #{start} AND #{end})
+            AND division IN
+            <foreach item="div" collection="division" open="(" separator="," close=")">
+                #{div}
+            </foreach>
+    </select>
+
+    <!-- 일정 번호와 사용자 번호를 기준으로 일정 조회 -->
+    <select id="selectCalendarByNoAndUser" parameterType="map" resultType="com.example.workus.calendar.vo.Calendar">
+        SELECT
+            calendar_no AS no,
+            calendar_name AS name,
+            calendar_location AS location,
+            calendar_start_date AS startDate,
+            calendar_end_date AS endDate,
+            calendar_division AS division,
+            calendar_content AS content,
+            dept_no AS deptNo
+        FROM
+            WORKUS_CALENDAR
+        WHERE
+            calendar_no = #{calendarNo}
+            AND user_no = #{userNo}
+    </select>
+
+    <select id="selectCalendarByNo" parameterType="map" resultType="com.example.workus.calendar.vo.Calendar">
+        SELECT
+            calendar_no AS no,
+            calendar_name AS name,
+            calendar_location AS location,
+            calendar_start_date AS startDate,
+            calendar_end_date AS endDate,
+            calendar_division AS division,
+            calendar_content AS content,
+            dept_no AS deptNo
+        FROM
+            WORKUS_CALENDAR
+        WHERE
+            calendar_no = #{calendarNo}
+    </select>
+
+    <!-- void insertCalendar(@Param("calendar") Calendar calendar); -->
+    <insert id="insertCalendar">
+        insert into WORKUS_CALENDAR
+        (calendar_name, calendar_content, calendar_start_date, calendar_end_date, calendar_location, calendar_division, user_no, dept_no)
+        values
+        (#{calendar.name}, #{calendar.content}, #{calendar.startDate}, #{calendar.endDate}, #{calendar.location}, #{calendar.division}, #{calendar.userNo}, #{calendar.deptNo})
+
+        <selectKey resultType="Long" keyProperty="calendar.no" keyColumn="calendar_no" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <!-- void deleteCalendar(@Param("calendarNo") Long calendarNo); -->
+    <delete id="deleteCalendar">
+        DELETE FROM WORKUS_CALENDAR
+        WHERE calendar_no = #{eventId}
+    </delete>
+
+    <!-- void updateCalendar(@Param("calendar") Calendar calendar); -->
+    <update id="updateCalendar">
+        UPDATE WORKUS_CALENDAR
+        SET
+            calendar_name = #{calendar.name},
+            calendar_content = #{calendar.content},
+            calendar_start_date = #{calendar.startDate},
+            calendar_end_date = #{calendar.endDate},
+            calendar_location = #{calendar.location},
+            calendar_division = #{calendar.division}
+        WHERE
+            calendar_no = #{calendar.no}
+    </update>
+
+
+
+</mapper>

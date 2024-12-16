@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.workus.attendance.mapper.AttendanceMapper">
+    <select id="getAttendanceByUserNo" resultType="AttendanceDto">
+        SELECT U.USER_NO as no
+            , U.ROLE_NO as roleNo
+            , U.USER_UNUSED_ANNUAL_LEAVE as unusedAnnualLeave
+            , P.ANNUAL_LEAVE_COUNT as annualLeaveCount
+        FROM WORKUS_USERS U, WORKUS_POSITION P
+        WHERE U.POSITION_NO = P.POSITION_NO
+          AND U.User_NO = #{userNo}
+    </select>
+    <select id="getAtdApprovalCount">
+        SELECT COUNT(*)
+        FROM WORKUS_ATTENDANCE_USER U
+                 JOIN
+             WORKUS_ATTENDANCE A ON U.ATD_NO = A.ATD_NO
+        WHERE U.USER_NO = #{userNo}
+          AND U.ATD_APPROVAL_STATUS = 'A'
+          AND U.ATD_STATUS = 'I'
+    </select>
+    <select id="getAllCategories" resultType="atdCategory">
+        SELECT ATD_CATEGORY_NO as no
+            , ATD_CATEGORY_NAME as name
+            , ATD_CATEGORY_COUNT as count
+        FROM WORKUS_ATTENDANCE_CATEGORY
+    </select>
+    <insert id="insertApproval">
+        INSERT INTO
+        WORKUS_ATTENDANCE
+        (ATD_TEXT
+        , ATD_FROM_DATE
+        , ATD_TO_DATE
+        , ATD_CATEGORY_NO
+        , USER_NO
+        , ATD_CATEGORY_TIME
+        <if test="form.totalDay != null">, ATD_TOTAL_DAY</if>)
+        VALUES
+        (#{form.reason}
+        , #{form.fromDate}
+        , #{form.toDate}
+        , #{form.categoryNo}
+        , #{form.userNo}
+        , #{form.time}
+        <if test="form.totalDay != null">, #{form.totalDay}</if>)
+        <selectKey keyProperty="form.no" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <insert id="insertApprovalUsers">
+        INSERT INTO
+        WORKUS_ATTENDANCE_USER
+        (ATD_APPROVAL_STATUS
+        , ATD_SEQUENCE
+        , USER_NO
+        , ATD_NO)
+        VALUES
+        <foreach collection="users" item="user" separator=",">
+            (#{user.status}
+            , #{user.sequence}
+            , #{user.userNo}
+            , #{form.no})
+        </foreach>
+    </insert>
+    <resultMap id="reqViewResultMap" type="reqViewDto">
+        <result property="no" column="no"/>
+        <result property="status" column="status"/>
+        <result property="reason" column="reason"/>
+        <result property="toDate" column="toDate"/>
+        <result property="fromDate" column="fromDate"/>
+        <result property="createdDate" column="createdDate"/>
+        <result property="time" column="time"/>
+        <result property="categoryName" column="categoryName"/>
+    </resultMap>
+    <select id="getAllRequestFormsByUserNo" resultMap="reqViewResultMap">
+        SELECT
+            A.ATD_NO AS no,
+            MAX(U.ATD_STATUS) AS status,
+            MAX(A.ATD_TEXT) AS reason,
+            MAX(A.ATD_TO_DATE) AS toDate,
+            MAX(A.ATD_FROM_DATE) AS fromDate,
+            MAX(A.ATD_CREATED_DATE) AS createdDate,
+            MAX(A.ATD_CATEGORY_TIME) AS time,
+            MAX(C.ATD_CATEGORY_NAME) AS categoryName
+        FROM WORKUS_ATTENDANCE A
+        JOIN WORKUS_ATTENDANCE_USER U ON A.ATD_NO = U.ATD_NO
+        JOIN WORKUS_ATTENDANCE_CATEGORY C ON A.ATD_CATEGORY_NO = C.ATD_CATEGORY_NO
+        LEFT JOIN WORKUS_ATTENDANCE_USER U2 ON U.ATD_NO = U2.ATD_NO AND U2.ATD_STATUS = #{condition.status}
+        WHERE A.USER_NO = #{userNo}
+        <if test="condition.status != null">
+            AND U2.ATD_NO IS NOT NULL
+        </if>
+        GROUP BY A.ATD_NO
+        ORDER BY
+            CASE
+                WHEN MAX(U.ATD_STATUS) = 'I' THEN 1
+                WHEN MAX(U.ATD_STATUS) = 'C' THEN 2
+            END,
+            A.ATD_NO ASC
+        LIMIT #{condition.offset}, #{condition.end}
+    </select>
+    <select id="getTotalRows" resultType="int">
+        SELECT COUNT(*) as CNT
+        FROM WORKUS_ATTENDANCE
+        WHERE USER_NO = #{userNo}
+        <if test="condition.status != null">
+        AND ATD_NO IN (SELECT U2.ATD_NO
+                        FROM WORKUS_ATTENDANCE_USER U2
+                        JOIN WORKUS_ATTENDANCE A2 ON U2.ATD_NO = A2.ATD_NO)
+        </if>
+    </select>
+
+    <resultMap id="refViewResultMap" type="refViewDto">
+        <result property="atdNo" column="atdNo"/>
+        <result property="refNo" column="refNo"/>
+        <result property="status" column="status"/>
+        <result property="reason" column="reason"/>
+        <result property="toDate" column="toDate"/>
+        <result property="fromDate" column="fromDate"/>
+        <result property="createdDate" column="createdDate"/>
+        <result property="time" column="time"/>
+        <result property="categoryName" column="categoryName"/>
+        <result property="reqUserName" column="reqUserName"/>
+    </resultMap>
+    <select id="getAllReferenceFormsByUserNo" resultMap="refViewResultMap">
+        SELECT A.ATD_NO AS atdNo
+        , MAX(U.ATD_APPROVAL_NO) as refNo
+        , MAX(U.ATD_STATUS) AS status
+        , MAX(A.ATD_TEXT) AS reason
+        , MAX(A.ATD_TO_DATE) AS toDate
+        , MAX(A.ATD_FROM_DATE) AS fromDate
+        , MAX(A.ATD_CREATED_DATE) AS createdDate
+        , MAX(A.ATD_CATEGORY_TIME) AS time
+        , MAX(C.ATD_CATEGORY_NAME) AS categoryName
+        , MAX(AU.USER_NAME) AS reqUserName
+        FROM WORKUS_ATTENDANCE A
+        JOIN WORKUS_ATTENDANCE_USER U ON A.ATD_NO = U.ATD_NO
+        JOIN WORKUS_ATTENDANCE_CATEGORY C ON A.ATD_CATEGORY_NO = C.ATD_CATEGORY_NO
+        JOIN WORKUS_USERS AU ON A.USER_NO = AU.USER_NO
+        <where>
+            <if test="condition.roleNo != 100">
+                AND U.USER_NO = #{userNo}
+                AND U.ATD_APPROVAL_STATUS = 'R'
+            </if>
+        </where>
+        <if test="condition.opt != null">
+            <choose>
+                <when test="condition.opt == 'name'">
+                    AND AU.USER_NAME LIKE CONCAT('%', #{condition.keyword}, '%')
+                </when>
+                <when test="condition.opt == 'reason'">
+                    AND A.ATD_TEXT LIKE CONCAT('%', #{condition.keyword}, '%')
+                </when>
+            </choose>
+        </if>
+        GROUP BY A.ATD_NO
+        ORDER BY
+        CASE
+        WHEN U.ATD_STATUS = 'I' THEN 1
+        WHEN U.ATD_STATUS = 'C' THEN 2
+        END,
+        A.ATD_NO ASC
+        LIMIT #{condition.offset}, #{condition.end}
+    </select>
+    <select id="getAllApprovalFormsByUserNo" resultType="apvViewDto">
+        SELECT A.ATD_NO AS atdNo
+        , U.ATD_APPROVAL_NO as apvNo
+        , U.ATD_STATUS AS status
+        , A.ATD_TEXT AS reason
+        , A.ATD_TO_DATE AS toDate
+        , A.ATD_FROM_DATE AS fromDate
+        , A.ATD_CREATED_DATE AS createdDate
+        , A.ATD_CATEGORY_TIME AS time
+        , C.ATD_CATEGORY_NAME AS categoryName
+        , AU.USER_NAME AS reqUserName
+        FROM
+        WORKUS_ATTENDANCE A
+        JOIN
+        WORKUS_ATTENDANCE_USER U ON A.ATD_NO = U.ATD_NO
+        JOIN
+        WORKUS_ATTENDANCE_CATEGORY C ON A.ATD_CATEGORY_NO = C.ATD_CATEGORY_NO
+        JOIN
+        WORKUS_USERS AU ON A.USER_NO = AU.USER_NO
+        WHERE
+        U.USER_NO = #{userNo}
+        AND U.ATD_APPROVAL_STATUS = 'A'
+        <if test="condition.opt != null">
+            <choose>
+                <when test="condition.opt == 'name'">
+                    and AU.USER_NAME like CONCAT('%', #{condition.keyword}, '%')
+                </when>
+                <when test="condition.opt == 'reason'">
+                    and A.ATD_TEXT like CONCAT('%', #{condition.keyword}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY
+        CASE
+        WHEN U.ATD_STATUS = 'I' THEN 1
+        WHEN U.ATD_STATUS = 'C' THEN 2
+        END,
+        A.ATD_NO ASC
+        LIMIT #{condition.offset}, #{condition.end}
+    </select>
+    <!-- CTE 쿼리 -->
+    <select id="getAnnualLeaveData" resultType="map">
+        SELECT U.USER_UNUSED_ANNUAL_LEAVE AS unused_leave,
+               C.ATD_CATEGORY_COUNT       AS category_count
+        FROM WORKUS_USERS U
+        JOIN WORKUS_ATTENDANCE A ON U.USER_NO = A.USER_NO
+        JOIN WORKUS_ATTENDANCE_CATEGORY C ON C.ATD_CATEGORY_NO = A.ATD_CATEGORY_NO
+        WHERE A.ATD_NO = #{atdNo};
+    </select>
+    <insert id="insertAnnualLeaveHistory">
+        INSERT INTO WORKUS_ANNUAL_LEAVE_HISTORY
+        (ATD_NO, ATD_USED_DATE, ATD_UNUSED_DATE)
+        VALUES (
+        #{apvReqDto.atdNo},
+        <if test="apvReqDto.totalDay != 0">
+            #{apvReqDto.totalDay}
+            , (SELECT USER_UNUSED_ANNUAL_LEAVE
+            FROM WORKUS_USERS
+            WHERE USER_NO = (SELECT USER_NO
+            FROM WORKUS_ATTENDANCE
+            WHERE ATD_NO = #{apvReqDto.atdNo})
+            ) - #{apvReqDto.totalDay}
+        </if>
+        <if test="apvReqDto.totalDay == 0">
+            (SELECT C.ATD_CATEGORY_COUNT
+            FROM WORKUS_ATTENDANCE_CATEGORY C
+            JOIN WORKUS_ATTENDANCE A ON C.ATD_CATEGORY_NO = A.ATD_CATEGORY_NO
+            WHERE A.ATD_NO = #{apvReqDto.atdNo})
+            , (SELECT USER_UNUSED_ANNUAL_LEAVE
+            FROM WORKUS_USERS
+            WHERE USER_NO = (SELECT USER_NO
+            FROM WORKUS_ATTENDANCE
+            WHERE ATD_NO = #{apvReqDto.atdNo})) -
+            (SELECT C.ATD_CATEGORY_COUNT
+            FROM WORKUS_ATTENDANCE_CATEGORY C
+            JOIN WORKUS_ATTENDANCE A ON C.ATD_CATEGORY_NO = A.ATD_CATEGORY_NO
+            WHERE A.ATD_NO = #{apvReqDto.atdNo})
+        </if>
+        )
+    </insert>
+    <!-- 결재자 상태 조회 쿼리 -->
+    <select id="getApprovalStatus" resultType="map">
+        SELECT AU.ATD_NO AS NO,
+               AU.ATD_STATUS AS status
+        FROM WORKUS_ATTENDANCE A
+        JOIN WORKUS_ATTENDANCE_USER AU ON AU.ATD_NO = A.ATD_NO
+        WHERE AU.ATD_NO = #{atdNo}
+        AND AU.ATD_APPROVAL_STATUS = 'A'
+    </select>
+    <update id="updateStatusByAtdNoAndUserNo">
+        UPDATE WORKUS_ATTENDANCE_USER
+        SET ATD_STATUS = 'C'
+        WHERE ATD_NO = #{atdNo}
+        AND USER_NO = #{approvalNo}
+    </update>
+    <update id="updateStatusByAtdNo">
+        UPDATE WORKUS_ATTENDANCE_USER
+        SET ATD_STATUS = 'C'
+        WHERE ATD_NO = #{atdNo}
+        AND ATD_APPROVAL_STATUS = 'I'
+    </update>
+    <update id="updateAnnualLeaveByUnusedDate">
+        UPDATE WORKUS_USERS U
+            JOIN (SELECT DISTINCT A.USER_NO
+                    , H.ATD_UNUSED_DATE
+                    , A.ATD_NO
+                    FROM WORKUS_ATTENDANCE A
+                    JOIN WORKUS_ANNUAL_LEAVE_HISTORY H ON A.ATD_NO = H.ATD_NO
+                    JOIN WORKUS_ATTENDANCE_USER AU ON A.ATD_NO = AU.ATD_NO
+                    WHERE AU.ATD_STATUS = 'C'
+                    ORDER BY H.ATD_NO DESC
+                    ) AS subquery
+            ON U.USER_NO = subquery.USER_NO
+        SET U.USER_UNUSED_ANNUAL_LEAVE = subquery.ATD_UNUSED_DATE
+        WHERE EXISTS (
+            SELECT 1
+            FROM WORKUS_ANNUAL_LEAVE_HISTORY H
+            WHERE H.ATD_NO = subquery.ATD_NO);
+    </update>
+    <select id="getUsedAnnualLeaveByUser" resultType="CalDto">
+        SELECT A.USER_NO       as userNo
+             , U.USER_NAME     as userName
+             , A.ATD_FROM_DATE as fromDate
+             , A.ATD_TO_DATE   as toDate
+             , A.ATD_CATEGORY_TIME as time
+             , U.DEPT_NO as deptNo
+             , D.DEPT_NAME as deptName
+             , C.ATD_CATEGORY_NAME as categoryName
+        FROM WORKUS_ATTENDANCE A
+        JOIN WORKUS_USERS U ON A.USER_NO = U.USER_NO
+        JOIN WORKUS_ANNUAL_LEAVE_HISTORY H ON H.ATD_NO = A.ATD_NO
+        JOIN WORKUS_ATTENDANCE_CATEGORY C ON A.ATD_CATEGORY_NO = C.ATD_CATEGORY_NO
+        JOIN WORKUS_DEPT D ON D.DEPT_NO = U.DEPT_NO
+        WHERE U.DEPT_NO = #{user.deptNo}
+    </select>
+    <select id="getAllUsedAnnualLeave" resultType="CalDto">
+        SELECT A.USER_NO       as userNo
+             , U.USER_NAME     as userName
+             , A.ATD_FROM_DATE as fromDate
+             , A.ATD_TO_DATE   as toDate
+             , A.ATD_CATEGORY_TIME as time
+             , U.DEPT_NO as deptNo
+             , D.DEPT_NAME as deptName
+             , C.ATD_CATEGORY_NAME as categoryName
+        FROM WORKUS_ATTENDANCE A
+        JOIN WORKUS_USERS U ON A.USER_NO = U.USER_NO
+        JOIN WORKUS_ANNUAL_LEAVE_HISTORY H ON H.ATD_NO = A.ATD_NO
+        JOIN WORKUS_ATTENDANCE_CATEGORY C ON A.ATD_CATEGORY_NO = C.ATD_CATEGORY_NO
+        JOIN WORKUS_DEPT D ON D.DEPT_NO = U.DEPT_NO
+    </select>
+</mapper>

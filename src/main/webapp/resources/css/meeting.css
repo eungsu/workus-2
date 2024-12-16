@@ -1,0 +1,81 @@
+/* 전체 페이지 스타일 */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* 페이지에서 스크롤을 없앰 */
+}
+
+/* 버튼의 너비를 100%로 설정 */
+.lnb .btn {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    position: relative;  /* 구분선 위치를 버튼 아래에 정확히 놓기 위해 */
+}
+
+.lnb li a {position:relative; z-index:1; padding:4px 2px; cursor: pointer;}
+.lnb li a:after {
+    content: "";
+    left: 0;
+    bottom: 3px;
+    width: 0;
+    height: 9px;
+    z-index: -1;
+    background-color: #e91e63;
+    position: absolute;
+    display: inline-block;
+    transition: all 0.3s ease;
+    opacity: 0.1;
+}
+.lnb li a:hover:after {width:100%;}
+
+.lnb li.on a:after {
+    opacity: 0.3;
+    width: 100%;
+}
+
+.listTitle:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #e91e63;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+/* 리스트 제목 스타일 */
+.listTitle {
+    position: relative;
+    padding-bottom: 5px; /* 밑줄과 텍스트 간격 조절 */
+    cursor: pointer;
+}
+
+.listTitle:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #e91e63;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.listTitle:hover:after {
+    width: 100%; /* 호버 시 밑줄이 차오름 */
+}
+
+.listTitle.on:after {
+    width: 100%; /* 활성화된 상태에서 밑줄이 전체 차지 */
+    opacity: 1;
+}
+
+/* 밑줄 스타일 */
+.underline {
+    text-decoration: underline;
+}

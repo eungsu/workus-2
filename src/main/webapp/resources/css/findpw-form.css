@@ -1,0 +1,146 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: white;
+}
+
+.container {
+    display: block;
+    max-width: 680px;
+    width: 80%;
+    margin: 120px auto; /* 상단 여백을 줄임 */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #e91e63;
+    font-size: 48px;
+    letter-spacing: -3px;
+    text-align: center;
+    margin: 40px 0 20px 0; /* 상단과 하단 여백 조정 */
+    transition: .2s linear;
+}
+
+h2.main-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    color: #140372;
+    font-size: 30px;
+    letter-spacing: -3px;
+    text-align: left;
+    margin: 0 0 20px 0; /* 하단 여백 조정 */
+}
+
+h3 {
+    margin: 20px 0 10px 0; /* 제목 간격 조정 */
+}
+
+form {
+    width: 100%;
+    margin: 20px 0; /* 폼 간격 조정 */
+}
+
+.input__block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0; /* 각 입력 블록 간격 조정 */
+    height: 50px;
+    position: relative;
+}
+
+.input__block input {
+    display: block;
+    width: calc(100% - 130px);
+    height: 50px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(15, 19, 42, 0.1);
+    padding-left: 15px;
+    font-size: 14px;
+    color: rgba(15, 19, 42, 0.6);
+    box-sizing: border-box;
+}
+
+.input__block button {
+    width: 120px;
+    height: 50px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.signup__btn {
+    background: #e91e63;
+    color: white;
+    width: 100%;
+    height: 50px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 15px 30px rgba(233, 30, 99, 0.36);
+    transition: .2s linear;
+}
+
+.separator {
+    display: block;
+    margin: 30px auto;
+    text-align: center;
+    height: 40px;
+    position: relative;
+    background: transparent;
+    color: rgba(15, 19, 42, 0.4);
+    font-size: 13px;
+    width: 100%;
+}
+
+.separator::before,
+.separator::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    background: rgba(15, 19, 42, 0.2);
+    height: 1px;
+    width: 45%;
+}
+
+.separator::before {
+    left: 0;
+}
+
+.separator::after {
+    right: 0;
+}
+
+.google__btn,
+.github__btn {
+    display: block;
+    width: 20%;
+    margin: 20px auto; /* 버튼 간격 조정 */
+    height: 50px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+}
+
+.google__btn {
+    background: #5b90f0;
+    color: white;
+    box-shadow: 0 15px 30px rgba(91, 144, 240, 0.36);
+    transition: .2s linear;
+}
+
+.github__btn {
+    background: #25282d;
+    color: white;
+    box-shadow: 0 15px 30px rgba(37, 40, 45, 0.36);
+    transition: .2s linear;
+}
+
+/*
+    commit 오류로 인한 주석 추가
+ */

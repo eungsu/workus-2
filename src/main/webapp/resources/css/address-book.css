@@ -1,0 +1,324 @@
+/* 전체 컨테이너 스타일 */
+.member-search-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1500px;
+    margin: 0 auto; /* 페이지 중앙 정렬 */
+}
+
+/* 검색 바 컨테이너 스타일 */
+.search-bar-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* 입력 창 스타일 */
+.search-input {
+    border-radius: 4px;
+    background-color: #ffffff;
+    height: 36px; /* 높이를 정확히 설정 */
+    padding: 5px 10px; /* 상하 패딩을 0으로 설정 */
+    font: 600 14px Montserrat, sans-serif; /* 글씨 크기 줄임 */
+    width: 204px;
+    border: 1px solid #0f132a; /* 기본 테두리 제거 */
+}
+
+/* 버튼 스타일 */
+.search-button {
+    border-radius: 100px;
+    background: #65558f;
+    height: 36px; /* 높이를 정확히 설정 */
+    color: #fff;
+    font: 500 14px/20px Roboto, sans-serif;
+    padding: 0 20px;
+    cursor: pointer;
+}
+
+.search-result-info {
+    font: 400 20px Montserrat, sans-serif;
+    color: #0f132a;
+}
+
+/* Testimonials 카드 컨테이너 */
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2열 */
+    gap: 20px 15px; /* 카드 간격 */
+    margin-top: 36px;
+    font: 16px/1.4 Roboto, sans-serif;
+}
+
+.testimonial-card {
+    display: flex;
+    align-items: flex-start; /* 좌측 정렬 */
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+/* 카드 내부 스타일 */
+.avatar-block {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px; /* 이미지와 텍스트 간격 */
+}
+
+/* 이미지 크기 조정 */
+.avatar-image {
+    width: 120px; /* 이미지 크기를 더 키우기 */
+    height: 120px;
+    margin-right: 20px; /* 이미지와 텍스트 간격 */
+}
+
+/* 텍스트 스타일 조정 */
+.info-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-title {
+    font-size: 1.2em; /* 제목 크기 증가 */
+    font-weight: bold;
+    margin: 0;
+}
+
+.info-description {
+    font-size: 1em; /* 설명 텍스트 크기 조정 */
+    color: #555;
+    margin: 5px 0;
+}
+
+.contact-info {
+    font-size: 0.9em; /* 연락처 정보 크기 조정 */
+    color: #777;
+}
+
+.address-info {
+    font-size: 0.9em; /* 주소 정보 크기 조정 */
+    color: #777;
+}
+
+/* 돋보기 아이콘 스타일 */
+.icon {
+    color: #555; /* 아이콘 색상 */
+    font-size: 20px; /* 아이콘 크기 조정 */
+}
+
+/* 필터 선택 박스 스타일 */
+.filter-select {
+    border-radius: 15px; /* 모서리 둥글게 */
+    background-color: #d9d9d9; /* 배경 색상 */
+    height: 36px; /* 높이 설정 */
+    padding: 0 10px; /* 패딩 설정 */
+    font: 600 15px Montserrat, sans-serif; /* 글씨 크기 */
+    border: none; /* 기본 테두리 제거 */
+    margin-right: 10px; /* 회원명 입력창과 간격 */
+}
+
+.lnb {
+    position: fixed; /* 고정 위치 */
+}
+
+main {
+    margin-left: 300px;
+    flex: 1; /* 나머지 공간 차지 */
+    padding: 20px; /* 여백 추가 */
+    box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+}
+
+.content {
+    width: 100%; /* 콘텐츠가 가득 차도록 설정 */
+    margin: 0; /* 기본 마진 제거 */
+    padding: 0; /* 기본 패딩 제거 */
+}
+
+.verticalLayoutFixedSection {
+    display: flex; /* 수평 정렬 */
+}
+
+/* 버튼의 너비를 100%로 설정 */
+.lnb .btn {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    position: relative;  /* 구분선 위치를 버튼 아래에 정확히 놓기 위해 */
+}
+
+/* 기본 메뉴 항목 스타일 */
+.lnb-menu label {
+    display: block;
+    cursor: pointer;
+    padding: 5px 0;
+    position: relative;
+}
+
+/* 클릭된 메뉴 항목에 밑줄 추가 */
+.lnb-menu label a {
+    position: relative;
+    padding: 5px 0;
+    text-decoration: none;
+    color: inherit; /* 기본 색상 유지 */
+}
+
+.lnb-menu label a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #e91e63;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+/* 호버 시 밑줄 확장 */
+.lnb-menu label a:hover:after {
+    width: 100%;
+}
+
+/* 선택된 항목에 밑줄 유지 */
+.lnb-menu label.selected a:after {
+    width: 100%;
+    opacity: 1;
+}
+
+/* 체크박스 숨기기 */
+.lnb-menu input[type="checkbox"] {
+    display: none; /* 체크박스 숨기기 */
+}
+
+/* 체크박스 선택된 상태에서 밑줄 */
+.lnb-menu input[type="checkbox"]:checked + a:after {
+    width: 100%;
+    opacity: 1;
+}
+
+/* 리스트 제목 스타일 */
+.listTitle {
+    position: relative;
+    padding-bottom: 5px; /* 밑줄과 텍스트 간격 조절 */
+    cursor: pointer;
+}
+
+.listTitle:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #e91e63;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+/* 메인 컨텐츠에 대한 부가 설명 스타일 */
+.description {
+    padding-top: 5px;
+    color: #5b90f0;
+    font-size: 15px;
+}
+
+.google__btn,
+.github__btn {
+    display: block;
+    width: 90%;
+    max-width: 680px;
+    margin: 20px auto;
+    height: 50px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 8px;
+    border: none;
+    line-height: 40px;
+
+    &.google__btn {
+        background: #5b90f0;
+        color: white;
+        box-shadow: 0 0 0 rgba(91, 144, 240, 0.36);
+        transition: .2s linear;
+
+        .fa {
+            font-size: 20px;
+            padding: 0 5px 0 0;
+        }
+
+        &:hover {
+            box-shadow: 0 5px 15px rgba(91, 144, 240, 0.36);
+        }
+    }
+
+    &.github__btn {
+        background: #25282d;
+        color: white;
+        box-shadow: 0 0 0 rgba(37, 40, 45, 0.36);
+        transition: .2s linear;
+
+        .fa {
+            font-size: 20px;
+            padding: 0 5px 0 0;
+        }
+
+        &:hover {
+            box-shadow: 0 5px 15px rgba(37, 40, 45, 0.36);
+        }
+    }
+}
+
+.modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.open-modal {
+    width: 150px; /* 원하는 고정 너비로 설정 */
+    height: 36px; /* 버튼 높이 일치 */
+    border-radius: 100px; /* 모서리 둥글게 */
+    background: #65558f; /* 배경 색상 */
+    color: #fff; /* 글자 색상 */
+    font: 500 14px Roboto, sans-serif; /* 폰트 스타일 */
+    cursor: pointer;
+    text-align: center; /* 텍스트 중앙 정렬 */
+    display: flex; /* Flexbox 사용 */
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+}
